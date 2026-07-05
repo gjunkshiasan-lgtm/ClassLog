@@ -1,0 +1,349 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+/* ============================================
+   CLASS CHRONICLES - Design System "Neo-Nocturnal"
+   ============================================ */
+
+:root {
+  --color-background: #131313;
+  --color-surface-container-lowest: #0e0e0e;
+  --color-surface-container-low: #1c1b1b;
+  --color-surface-container: #201f1f;
+  --color-surface-container-high: #2a2a2a;
+  --color-surface-container-highest: #353534;
+  --color-surface-bright: #393939;
+
+  --color-on-surface: #e5e2e1;
+  --color-on-surface-variant: #b9cbc1;
+
+  --color-outline: #83958c;
+  --color-outline-variant: #333333;
+
+  --color-primary: #fbfffa;
+  --color-on-primary: #003828;
+  --color-primary-container: #00ffc2;
+  --color-on-primary-container: #007255;
+  --color-primary-fixed: #36ffc4;
+  --color-primary-fixed-dim: #00e1ab;
+
+  --color-secondary: #b9f1ff;
+  --color-on-secondary: #00363f;
+  --color-secondary-container: #00e0ff;
+
+  --color-tertiary: #fffdff;
+  --color-on-tertiary: #650030;
+  --color-tertiary-container: #ffd7e0;
+  --color-on-tertiary-container: #c30063;
+
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+  --color-error-container: #93000a;
+  --color-on-error-container: #ffdad6;
+  --color-error-strong: #b3211e;
+
+  --font-family: 'Space Grotesk', sans-serif;
+
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-family);
+  min-height: 100dvh;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root {
+  min-height: 100dvh;
+}
+
+button, input, textarea {
+  font-family: var(--font-family);
+}
+
+/* ---------- Tipografia ---------- */
+.text-display-lg {
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+@media (min-width: 768px) {
+  .text-display-lg { font-size: 48px; }
+}
+
+.text-headline-md {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.text-body-lg {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.text-body-md {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.text-label-caps {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.text-mono-data {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Layout base pagina ---------- */
+.pagina {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--space-md);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.pagina-contenuto {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+  z-index: 1;
+  padding-top: var(--space-xl);
+}
+
+.griglia-decorativa {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.1;
+  background-image:
+    linear-gradient(#333 1px, transparent 1px),
+    linear-gradient(90deg, #333 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.header-brand {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: var(--space-md);
+  display: flex;
+  justify-content: center;
+  z-index: 50;
+}
+@media (min-width: 768px) {
+  .header-brand { justify-content: flex-start; }
+}
+
+.header-brand h1 {
+  margin: 0;
+  color: var(--color-primary);
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Card Neo-Brutalista ---------- */
+.neo-card {
+  border: 2px solid var(--color-outline-variant);
+  background-color: var(--color-surface-container-low);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.neo-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-sm);
+}
+
+/* ---------- Bottoni Brutalisti ---------- */
+.btn-brutalist {
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  padding: var(--space-md) var(--space-lg);
+  font-family: var(--font-family);
+  font-size: 24px;
+  font-weight: 600;
+  text-transform: uppercase;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  transition: all 0.1s ease;
+  box-shadow: 4px 4px 0px 0px var(--shadow-color, var(--color-secondary));
+}
+
+.btn-brutalist:active:not(:disabled) {
+  box-shadow: 0px 0px 0px 0px var(--shadow-color, var(--color-secondary));
+  transform: translate(4px, 4px);
+}
+
+.btn-brutalist:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: var(--color-primary);
+  color: var(--color-on-primary);
+  --shadow-color: var(--color-secondary);
+}
+
+.btn-primary-container {
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  --shadow-color: var(--color-primary-fixed-dim);
+}
+
+.btn-danger {
+  background-color: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+  --shadow-color: var(--color-error-strong);
+}
+
+.btn-secondary-outline {
+  background-color: transparent;
+  color: var(--color-on-surface);
+  border: 2px solid var(--color-outline-variant);
+  box-shadow: none;
+}
+.btn-secondary-outline:active:not(:disabled) {
+  transform: translate(2px, 2px);
+}
+
+/* ---------- Input Brutalisti ---------- */
+.campo-input-wrap {
+  position: relative;
+  width: 100%;
+}
+
+.input-brutalist {
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--color-outline-variant);
+  background: transparent;
+  border-radius: 0;
+  color: var(--color-primary);
+  padding: var(--space-md) 0 var(--space-xs) 0;
+  font-size: 16px;
+  transition: all 0.2s ease;
+}
+
+.input-brutalist:focus {
+  outline: none;
+  border-bottom: 2px solid var(--color-primary-fixed-dim);
+}
+
+.input-brutalist::placeholder {
+  color: transparent;
+}
+
+.campo-label {
+  position: absolute;
+  left: 0;
+  top: var(--space-md);
+  color: var(--color-on-surface-variant);
+  font-size: 16px;
+  transition: all 0.2s ease;
+  pointer-events: none;
+  transform-origin: left;
+}
+
+.input-brutalist:focus + .campo-label,
+.input-brutalist:not(:placeholder-shown) + .campo-label {
+  transform: translateY(-24px) scale(0.85);
+  color: var(--color-primary-fixed-dim);
+}
+
+.input-brutalist.campo-errore {
+  border-bottom-color: var(--color-error);
+}
+
+/* ---------- Messaggi di stato ---------- */
+.messaggio-errore {
+  background-color: var(--color-error-container);
+  color: var(--color-on-error-container);
+  border: 2px solid var(--color-error);
+  padding: var(--space-md);
+  font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+.messaggio-successo {
+  background-color: var(--color-surface-container-lowest);
+  color: var(--color-primary-fixed-dim);
+  border: 2px solid var(--color-primary-fixed-dim);
+  padding: var(--space-md);
+  font-size: 14px;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+}
+
+/* ---------- Link testuali ---------- */
+.link-testuale {
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+  font-size: inherit;
+  padding: 0;
+}
+.link-testuale:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Spinner di caricamento ---------- */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(0,0,0,0.2);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: girare 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes girare {
+  to { transform: rotate(360deg); }
+}
