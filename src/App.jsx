@@ -1,17 +1,19 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './lib/AuthContext'
+import { AdminAuthProvider } from './lib/AdminAuthContext'
 import RottaProtetta from './lib/RottaProtetta'
 import Benvenuto from './pages/Benvenuto'
 import Accedi from './pages/Accedi'
 import Feed from './pages/Feed'
 import CreaPost from './pages/CreaPost'
-import AdminPlaceholder from './pages/AdminPlaceholder'
+import Admin from './pages/Admin'
 import ProfiloPlaceholder from './pages/ProfiloPlaceholder'
 import RegolePlaceholder from './pages/RegolePlaceholder'
 
 function App() {
   return (
     <AuthProvider>
+      <AdminAuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Benvenuto />} />
@@ -38,7 +40,7 @@ function App() {
             path="/admin"
             element={
               <RottaProtetta>
-                <AdminPlaceholder />
+                <Admin />
               </RottaProtetta>
             }
           />
@@ -52,6 +54,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
+      </AdminAuthProvider>
     </AuthProvider>
   )
 }
