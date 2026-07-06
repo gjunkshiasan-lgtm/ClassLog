@@ -1,0 +1,82 @@
+import { useState, useEffect, useCallback } from 'react'
+import { Link } from 'react-router-dom'
+import { chiamaFunzione } from '../lib/supabaseClient'
+import { useAuth } from '../lib/AuthContext'
+import LayoutApp from '../components/LayoutApp'
+import PostCard from '../components/PostCard'
+
+export default function Feed() {
+  const { utente } = useAuth()
+  const [post, setPost] = useState([])
+  const [caricamento, setCaricamento] = useState(true)
+  const [errore, setErrore] = useState('')
+
+  const caricaFeed = useCallback(async () => {
+    setErrore('')
+    try {
+      const risposta = await chiamaFunzione('ottieni-post', { utente_id: utente.id })
+      setPost(risposta.post)
+    } catch (err) {
+      setErrore(err.message)
+    } finally {
+      setCaricamento(false)
+    }
+  }, [utente.id])
+
+  useEffect(() => {
+    caricaFeed()
+  }, [caricaFeed])
+
+  async function gestisciSegnalazione(postId) {
+    try {
+      await chiamaFunzione('segnala-post', { post_id: postId, utente_id: utente.id })
+    } catch (err) {
+      // Anche in caso di errore nel salvataggio, non blocchiamo l'interfaccia:
+      // mostriamo comunque la conferma visiva per non scoraggiare la segnalazione.
+      console.error(err)
+    }
+  }
+
+  return (
+    <LayoutApp>
+      {caricamento && (
+        <div className="stato-vuoto">
+          <span className="spinner" aria-hidden="true" style={{ width: 32, height: 32 }} />
+          <p className="text-body-md">Caricamento cronache in corso...</p>
+        </div>
+      )}
+
+      {!caricamento && errore && (
+        <div className="messaggio-errore" role="alert">
+          <span aria-hidden="true">⚠️</span>
+          <span>{errore}</span>
+        </div>
+      )}
+
+      {!caricamento && !errore && post.length === 0 && (
+        <div className="stato-vuoto">
+          <span style={{ fontSize: 40 }}>📭</span>
+          <h3 className="text-headline-md" style={{ margin: 0 }}>Nessuna cronaca ancora</h3>
+          <p className="text-body-md">
+            Sii il primo a raccontare qualcosa! Le nuove cronache appariranno qui dopo l'approvazione dell'Admin.
+          </p>
+          <Link to="/crea" className="btn-brutalist btn-primary-container" style={{ width: 'auto', padding: '12px 24px' }}>
+            Scrivi la prima cronaca
+          </Link>
+        </div>
+      )}
+
+      {!caricamento && !errore && post.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+          {post.map((p) => (
+            <PostCard key={p.id} post={p} onSegnala={gestisciSegnalazione} />
+          ))}
+        </div>
+      )}
+
+      <Link to="/crea" className="fab-nuovo-post" aria-label="Nuova cronaca">
+        ➕
+      </Link>
+    </LayoutApp>
+  )
+}
