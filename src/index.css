@@ -769,3 +769,140 @@ button, input, textarea {
   transform: translateX(20px);
   background-color: var(--color-on-primary);
 }
+
+/* ---------- Sezione ROOT: gestione utenti ---------- */
+.root-tab-selector {
+  display: flex;
+  gap: var(--space-sm);
+  border-bottom: 2px solid var(--color-outline-variant);
+  padding-bottom: var(--space-sm);
+}
+
+.root-tab-btn {
+  background: none;
+  border: none;
+  color: var(--color-on-surface-variant);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -10px;
+}
+
+.root-tab-btn.attivo {
+  color: var(--color-primary-fixed-dim);
+  border-bottom-color: var(--color-primary-fixed-dim);
+}
+
+.riga-utente {
+  background-color: var(--color-surface-container-low);
+  border: 2px solid var(--color-outline-variant);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.riga-utente-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.badge-ruolo {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 8px;
+  border: 1px solid;
+}
+
+.badge-ruolo.root {
+  color: var(--color-tertiary-container);
+  border-color: var(--color-tertiary-container);
+}
+.badge-ruolo.admin {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+.badge-ruolo.studente {
+  color: var(--color-on-surface-variant);
+  border-color: var(--color-outline-variant);
+}
+
+.badge-bannato {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  padding: 2px 8px;
+}
+
+.riga-utente-azioni {
+  display: flex;
+  gap: var(--space-sm);
+  flex-wrap: wrap;
+}
+
+.btn-azione-piccolo {
+  border: 2px solid var(--color-outline-variant);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-family: var(--font-family);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.btn-azione-piccolo:hover {
+  border-color: var(--color-primary-fixed-dim);
+  color: var(--color-primary-fixed-dim);
+}
+
+.btn-azione-piccolo.pericolo:hover {
+  border-color: var(--color-error);
+  color: var(--color-error);
+}
+
+.pannello-ban-form {
+  background-color: var(--color-surface-container);
+  border: 2px solid var(--color-error);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  margin-top: var(--space-sm);
+}
+
+.tabella-motivi-ban {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tabella-motivi-ban th, .tabella-motivi-ban td {
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+
+.tabella-motivi-ban th {
+  color: var(--color-on-surface-variant);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+}
+
+.tabella-motivi-ban tr.selezionabile {
+  cursor: pointer;
+}
+.tabella-motivi-ban tr.selezionabile:hover {
+  background-color: var(--color-surface-container-lowest);
+}
