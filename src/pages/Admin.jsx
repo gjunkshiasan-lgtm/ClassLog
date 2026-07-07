@@ -271,6 +271,130 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
   )
 }
 
+function ZonaPericolo({ utente }) {
+  const [scaricando, setScaricando] = useState(false)
+  const [mostraConferma, setMostraConferma] = useState(false)
+  const [testoConferma, setTestoConferma] = useState('')
+  const [distruggendo, setDistruggendo] = useState(false)
+  const [errore, setErrore] = useState('')
+  const [completato, setCompletato] = useState(false)
+
+  async function gestisciBackup() {
+    setErrore('')
+    setScaricando(true)
+    try {
+      const risposta = await chiamaFunzione('root-backup-testo', { richiedente_id: utente.id })
+      const blob = new Blob([risposta.testo_backup], { type: 'text/plain;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      const dataOggi = new Date().toISOString().slice(0, 10)
+      link.href = url
+      link.download = `backup-cronache-${dataOggi}.txt`
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      URL.revokeObjectURL(url)
+    } catch (err) {
+      setErrore(err.message)
+    } finally {
+      setScaricando(false)
+    }
+  }
+
+  async function gestisciAutodistruzione() {
+    setErrore('')
+    setDistruggendo(true)
+    try {
+      await chiamaFunzione('root-autodistruzione', {
+        richiedente_id: utente.id,
+        conferma_testuale: testoConferma,
+      })
+      setCompletato(true)
+    } catch (err) {
+      setErrore(err.message)
+      setDistruggendo(false)
+    }
+  }
+
+  if (completato) {
+    return (
+      <div className="zona-pericolo">
+        <span style={{ fontSize: 32 }}>💥</span>
+        <p className="text-body-md">
+          La classe e tutti i suoi dati sono stati eliminati permanentemente.
+          Puoi chiudere questa pagina o uscire dall'account.
+        </p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="zona-pericolo">
+      <div className="zona-pericolo-titolo">
+        <span aria-hidden="true">⚠️</span>
+        <span>Zona Pericolo</span>
+      </div>
+      <p className="text-body-md" style={{ margin: 0, color: 'var(--color-on-surface-variant)', fontSize: 14 }}>
+        Azioni di sistema irreversibili. Procedere con cautela.
+      </p>
+
+      {errore && (
+        <div className="messaggio-errore" role="alert">
+          <span aria-hidden="true">⚠️</span>
+          <span>{errore}</span>
+        </div>
+      )}
+
+      <button className="btn-zona-pericolo" onClick={gestisciBackup} disabled={scaricando}>
+        {scaricando ? <span className="spinner" aria-hidden="true" /> : <>⬇️ Scarica Backup (Solo Testo)</>}
+      </button>
+
+      {!mostraConferma ? (
+        <button className="btn-autodistruzione" onClick={() => setMostraConferma(true)}>
+          🗑️ Autodistruzione di Fine Anno
+        </button>
+      ) : (
+        <div className="conferma-autodistruzione-box">
+          <p className="text-body-md" style={{ margin: 0 }}>
+            Questa azione cancellerà <strong>permanentemente</strong> tutte le cronache, gli utenti e la classe stessa.
+            Non può essere annullata. Scarica prima il backup se vuoi conservare le cronache.
+          </p>
+          <div className="campo-input-wrap">
+            <input
+              id="conferma-distruzione"
+              className="input-brutalist"
+              type="text"
+              placeholder=" "
+              value={testoConferma}
+              onChange={(e) => setTestoConferma(e.target.value)}
+              disabled={distruggendo}
+            />
+            <label className="campo-label" htmlFor="conferma-distruzione">
+              Scrivi "CONFERMA" per procedere
+            </label>
+          </div>
+          <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
+            <button
+              className="btn-autodistruzione"
+              style={{ flex: 1 }}
+              onClick={gestisciAutodistruzione}
+              disabled={distruggendo || testoConferma !== 'CONFERMA'}
+            >
+              {distruggendo ? <span className="spinner" aria-hidden="true" /> : 'Elimina Tutto Definitivamente'}
+            </button>
+            <button
+              className="btn-azione-piccolo"
+              onClick={() => { setMostraConferma(false); setTestoConferma('') }}
+              disabled={distruggendo}
+            >
+              Annulla
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 function GestioneUtenti({ utente }) {
   const [utenti, setUtenti] = useState([])
   const [motiviPredefiniti, setMotiviPredefiniti] = useState([])
@@ -317,13 +441,17 @@ function GestioneUtenti({ utente }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+      <ZonaPericolo utente={utente} />
+
       {errore && (
         <div className="messaggio-errore" role="alert">
           <span aria-hidden="true">⚠️</span>
           <span>{errore}</span>
         </div>
       )}
+
+      <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>Utenti della Classe</h3>
 
       {utenti.map((u) => (
         <RigaUtente

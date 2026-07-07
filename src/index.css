@@ -906,3 +906,78 @@ button, input, textarea {
 .tabella-motivi-ban tr.selezionabile:hover {
   background-color: var(--color-surface-container-lowest);
 }
+
+/* ---------- Zona Pericolo (ROOT) ---------- */
+.zona-pericolo {
+  border: 2px solid var(--color-error);
+  background-color: var(--color-surface-container);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.zona-pericolo-titolo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--color-error);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.btn-zona-pericolo {
+  width: 100%;
+  border: 2px solid var(--color-outline-variant);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 15px;
+  padding: var(--space-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.btn-zona-pericolo:hover:not(:disabled) {
+  border-color: var(--color-secondary);
+  color: var(--color-secondary);
+}
+
+.btn-autodistruzione {
+  width: 100%;
+  border: 2px solid var(--color-error);
+  background-color: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 15px;
+  padding: var(--space-md);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+}
+
+.btn-autodistruzione:hover:not(:disabled) {
+  background-color: var(--color-error);
+  color: var(--color-on-error);
+}
+
+.btn-autodistruzione:disabled, .btn-zona-pericolo:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.conferma-autodistruzione-box {
+  background-color: var(--color-surface-container-lowest);
+  border: 2px solid var(--color-error);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
