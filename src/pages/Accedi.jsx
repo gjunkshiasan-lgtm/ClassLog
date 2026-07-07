@@ -1,17 +1,24 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 
 export default function Accedi() {
   const navigate = useNavigate()
-  const { accedi } = useAuth()
+  const { accedi, utente, caricamento } = useAuth()
 
   const [codiceClasse, setCodiceClasse] = useState('')
   const [nickname, setNickname] = useState('')
   const [password, setPassword] = useState('')
   const [inviando, setInviando] = useState(false)
   const [errore, setErrore] = useState('')
+
+  useEffect(() => {
+    if (!caricamento && utente) {
+      const eAncoraBannato = utente.bannato_fino_a && new Date(utente.bannato_fino_a) > new Date()
+      navigate(eAncoraBannato ? '/bannato' : '/feed', { replace: true })
+    }
+  }, [caricamento, utente, navigate])
 
   async function gestisciInvio(e) {
     e.preventDefault()
@@ -33,14 +40,27 @@ export default function Accedi() {
       accedi({
         id: risposta.utente.id,
         nickname: risposta.utente.nickname,
+        classe_id: risposta.utente.classe_id,
+        ruolo: risposta.utente.ruolo,
+        bannato: risposta.utente.bannato,
+        bannato_fino_a: risposta.utente.bannato_fino_a,
+        motivo_ban: risposta.utente.motivo_ban,
       })
 
-      navigate('/feed')
+      if (risposta.utente.bannato) {
+        navigate('/bannato')
+      } else {
+        navigate('/feed')
+      }
     } catch (err) {
       setErrore(err.message)
     } finally {
       setInviando(false)
     }
+  }
+
+  if (caricamento || utente) {
+    return null
   }
 
   return (

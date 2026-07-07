@@ -9,6 +9,7 @@ import { useAuth } from '../lib/AuthContext'
 export default function LayoutApp({ children }) {
   const navigate = useNavigate()
   const { utente } = useAuth()
+  const puoModerare = utente?.ruolo === 'admin' || utente?.ruolo === 'root'
 
   return (
     <div className="layout-app">
@@ -43,10 +44,12 @@ export default function LayoutApp({ children }) {
           <span className="nav-tab-icona" aria-hidden="true">➕</span>
           <span className="text-label-caps">Crea</span>
         </NavLink>
-        <NavLink to="/admin" className={({ isActive }) => `nav-tab ${isActive ? 'attivo' : ''}`}>
-          <span className="nav-tab-icona" aria-hidden="true">🖥️</span>
-          <span className="text-label-caps">Admin</span>
-        </NavLink>
+        {puoModerare && (
+          <NavLink to="/admin" className={({ isActive }) => `nav-tab ${isActive ? 'attivo' : ''}`}>
+            <span className="nav-tab-icona" aria-hidden="true">🖥️</span>
+            <span className="text-label-caps">Admin</span>
+          </NavLink>
+        )}
         <NavLink to="/profilo" className={({ isActive }) => `nav-tab ${isActive ? 'attivo' : ''}`}>
           <span className="nav-tab-icona" aria-hidden="true">👤</span>
           <span className="text-label-caps">Profilo</span>
