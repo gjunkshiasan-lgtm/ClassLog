@@ -6,7 +6,7 @@ import Accedi from './pages/Accedi'
 import Feed from './pages/Feed'
 import CreaPost from './pages/CreaPost'
 import Admin from './pages/Admin'
-import ProfiloPlaceholder from './pages/ProfiloPlaceholder'
+import Profilo from './pages/Profilo'
 import RegolePlaceholder from './pages/RegolePlaceholder'
 import Bannato from './pages/Bannato'
 
@@ -48,7 +48,7 @@ function App() {
             path="/profilo"
             element={
               <RottaProtetta>
-                <ProfiloPlaceholder />
+                <Profilo />
               </RottaProtetta>
             }
           />

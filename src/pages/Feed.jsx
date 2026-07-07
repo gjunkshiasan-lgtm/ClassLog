@@ -37,6 +37,14 @@ export default function Feed() {
     }
   }
 
+  async function gestisciRichiestaRimozione(postId, motivo) {
+    try {
+      await chiamaFunzione('richiedi-rimozione', { post_id: postId, utente_id: utente.id, motivo })
+    } catch (err) {
+      console.error(err)
+    }
+  }
+
   return (
     <LayoutApp>
       {caricamento && (
@@ -69,7 +77,7 @@ export default function Feed() {
       {!caricamento && !errore && post.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
           {post.map((p) => (
-            <PostCard key={p.id} post={p} onSegnala={gestisciSegnalazione} />
+            <PostCard key={p.id} post={p} onSegnala={gestisciSegnalazione} onRichiediRimozione={gestisciRichiestaRimozione} />
           ))}
         </div>
       )}

@@ -981,3 +981,118 @@ button, input, textarea {
   flex-direction: column;
   gap: var(--space-md);
 }
+
+/* ---------- Profilo Utente ---------- */
+.profilo-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+  text-align: center;
+}
+
+.profilo-avatar {
+  width: 96px;
+  height: 96px;
+  border: 2px solid var(--color-outline-variant);
+  background-color: var(--color-surface-container-lowest);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40px;
+  background-image:
+    linear-gradient(#2a2a2a 1px, transparent 1px),
+    linear-gradient(90deg, #2a2a2a 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+.profilo-stats-griglia {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-md);
+}
+
+.profilo-stat-card {
+  background-color: var(--color-surface-container-low);
+  border: 2px solid var(--color-outline-variant);
+  padding: var(--space-md);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.profilo-stat-numero {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-primary-fixed-dim);
+}
+
+.zona-pericolo-danger-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  color: var(--color-error);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+/* ---------- Richieste di Rimozione (studente) ---------- */
+.rimozione-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: var(--space-md);
+}
+
+.rimozione-modal {
+  background-color: var(--color-surface-container-low);
+  border: 2px solid var(--color-outline-variant);
+  padding: var(--space-lg);
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.rimozione-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* ---------- Richieste rimozione (admin) ---------- */
+.card-richiesta-rimozione {
+  background-color: var(--color-surface-container-low);
+  border: 2px solid var(--color-tertiary-container);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.btn-accoglie {
+  flex: 1;
+  border: 2px solid var(--color-tertiary-container);
+  background: transparent;
+  color: var(--color-tertiary-container);
+  font-family: var(--font-family);
+  font-weight: 600;
+  font-size: 14px;
+  padding: var(--space-sm) var(--space-md);
+  cursor: pointer;
+}
+.btn-accoglie:hover:not(:disabled) {
+  background-color: var(--color-tertiary-container);
+  color: var(--color-on-tertiary-container);
+}

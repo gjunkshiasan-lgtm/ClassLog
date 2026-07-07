@@ -395,6 +395,7 @@ function ZonaPericolo({ utente }) {
     </div>
   )
 }
+
 function GestioneUtenti({ utente }) {
   const [utenti, setUtenti] = useState([])
   const [motiviPredefiniti, setMotiviPredefiniti] = useState([])
@@ -468,6 +469,112 @@ function GestioneUtenti({ utente }) {
   )
 }
 
+function CardRichiestaRimozione({ richiesta, onDecidi }) {
+  const [elaborando, setElaborando] = useState(false)
+
+  async function gestisci(decisione) {
+    setElaborando(true)
+    await onDecidi(richiesta.id, decisione)
+    setElaborando(false)
+  }
+
+  return (
+    <div className="card-richiesta-rimozione">
+      <span className="text-label-caps" style={{ color: 'var(--color-tertiary-container)' }}>
+        🙈 Richiesta di Rimozione
+      </span>
+      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>{richiesta.post?.titolo ?? '(cronaca non più disponibile)'}</h4>
+      {richiesta.post?.contenuto && (
+        <p className="post-card-contenuto">{richiesta.post.contenuto}</p>
+      )}
+      {richiesta.motivo && (
+        <p className="text-body-md" style={{ fontSize: 14, color: 'var(--color-on-surface-variant)' }}>
+          <strong>Motivo:</strong> {richiesta.motivo}
+        </p>
+      )}
+      <span className="post-card-tempo">{tempoRelativo(richiesta.creata_il)}</span>
+
+      <div className="admin-card-azioni">
+        <button className="btn-accoglie" onClick={() => gestisci('accoglie')} disabled={elaborando}>
+          ✅ Accogli (rimuovi)
+        </button>
+        <button className="btn-rifiuta" onClick={() => gestisci('rifiuta')} disabled={elaborando}>
+          ⊗ Rifiuta richiesta
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function RichiesteRimozione({ utente }) {
+  const [richieste, setRichieste] = useState([])
+  const [caricamento, setCaricamento] = useState(true)
+  const [errore, setErrore] = useState('')
+
+  const caricaRichieste = useCallback(async () => {
+    setErrore('')
+    try {
+      const risposta = await chiamaFunzione('admin-gestisci-rimozioni', { azione: 'lista', utente_id: utente.id })
+      setRichieste(risposta.richieste)
+    } catch (err) {
+      setErrore(err.message)
+    } finally {
+      setCaricamento(false)
+    }
+  }, [utente.id])
+
+  useEffect(() => {
+    caricaRichieste()
+  }, [caricaRichieste])
+
+  async function gestisciDecisione(richiestaId, decisione) {
+    try {
+      await chiamaFunzione('admin-gestisci-rimozioni', {
+        azione: 'decidi',
+        utente_id: utente.id,
+        richiesta_id: richiestaId,
+        decisione,
+      })
+      setRichieste((prec) => prec.filter((r) => r.id !== richiestaId))
+    } catch (err) {
+      setErrore(err.message)
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>Richieste di Rimozione</h3>
+        <span className="admin-badge-coda">{richieste.length} in attesa</span>
+      </div>
+
+      {caricamento && (
+        <div className="stato-vuoto">
+          <span className="spinner" aria-hidden="true" style={{ width: 28, height: 28 }} />
+        </div>
+      )}
+
+      {!caricamento && errore && (
+        <div className="messaggio-errore" role="alert">
+          <span aria-hidden="true">⚠️</span>
+          <span>{errore}</span>
+        </div>
+      )}
+
+      {!caricamento && !errore && richieste.length === 0 && (
+        <div className="stato-vuoto">
+          <span style={{ fontSize: 32 }}>✅</span>
+          <p className="text-body-md">Nessuna richiesta di rimozione in attesa.</p>
+        </div>
+      )}
+
+      {!caricamento && richieste.map((r) => (
+        <CardRichiestaRimozione key={r.id} richiesta={r} onDecidi={gestisciDecisione} />
+      ))}
+    </div>
+  )
+}
+
 function DashboardAdmin({ utente }) {
   const [tab, setTab] = useState('coda')
   const eRoot = utente.ruolo === 'root'
@@ -476,24 +583,31 @@ function DashboardAdmin({ utente }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
       <h2 className="text-headline-md" style={{ margin: 0 }}>Controlli di Sistema</h2>
 
-      {eRoot && (
-        <div className="root-tab-selector">
-          <button
-            className={`root-tab-btn ${tab === 'coda' ? 'attivo' : ''}`}
-            onClick={() => setTab('coda')}
-          >
-            Coda Approvazione
-          </button>
+      <div className="root-tab-selector">
+        <button
+          className={`root-tab-btn ${tab === 'coda' ? 'attivo' : ''}`}
+          onClick={() => setTab('coda')}
+        >
+          Coda Approvazione
+        </button>
+        <button
+          className={`root-tab-btn ${tab === 'rimozioni' ? 'attivo' : ''}`}
+          onClick={() => setTab('rimozioni')}
+        >
+          Richieste Rimozione
+        </button>
+        {eRoot && (
           <button
             className={`root-tab-btn ${tab === 'utenti' ? 'attivo' : ''}`}
             onClick={() => setTab('utenti')}
           >
             Gestione Utenti
           </button>
-        </div>
-      )}
+        )}
+      </div>
 
       {tab === 'coda' && <CodaApprovazione utente={utente} />}
+      {tab === 'rimozioni' && <RichiesteRimozione utente={utente} />}
       {tab === 'utenti' && eRoot && <GestioneUtenti utente={utente} />}
     </div>
   )
