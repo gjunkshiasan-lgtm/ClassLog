@@ -1,14 +1,23 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { tempoRelativo, ETICHETTE_CATEGORIE } from '../lib/formattazione'
+import ModalRichiediRimozione from './ModalRichiediRimozione'
 
-export default function PostCard({ post, onSegnala }) {
+export default function PostCard({ post, onSegnala, onRichiediRimozione }) {
   const [segnalazioneInviata, setSegnalazioneInviata] = useState(false)
   const [mostraConfermaSegnalazione, setMostraConfermaSegnalazione] = useState(false)
+  const [mostraModalRimozione, setMostraModalRimozione] = useState(false)
+  const [richiestaRimozioneInviata, setRichiestaRimozioneInviata] = useState(false)
 
   async function gestisciSegnalazione() {
     await onSegnala(post.id)
     setSegnalazioneInviata(true)
     setMostraConfermaSegnalazione(false)
+  }
+
+  async function gestisciRichiestaRimozione(motivo) {
+    await onRichiediRimozione(post.id, motivo)
+    setRichiestaRimozioneInviata(true)
+    setMostraModalRimozione(false)
   }
 
   if (segnalazioneInviata) {
@@ -38,11 +47,29 @@ export default function PostCard({ post, onSegnala }) {
       <h3 className="post-card-titolo">{post.titolo}</h3>
       <p className="post-card-contenuto">{post.contenuto}</p>
 
-      <div className="post-card-azioni">
+      {richiestaRimozioneInviata && (
+        <div className="messaggio-successo" role="status">
+          <span aria-hidden="true">✅</span>
+          <span>Richiesta di rimozione inviata in forma anonima.</span>
+        </div>
+      )}
+
+      <div className="post-card-azioni" style={{ flexWrap: 'wrap' }}>
         <span className="post-card-azione-btn" style={{ cursor: 'default' }}>
           <span aria-hidden="true">❤️</span>
           <span>{post.numero_mi_piace}</span>
         </span>
+
+        {!richiestaRimozioneInviata && (
+          <button
+            type="button"
+            className="post-card-azione-btn"
+            onClick={() => setMostraModalRimozione(true)}
+          >
+            <span aria-hidden="true">🙈</span>
+            <span>Mi riconosco</span>
+          </button>
+        )}
 
         {!mostraConfermaSegnalazione ? (
           <button
@@ -77,6 +104,13 @@ export default function PostCard({ post, onSegnala }) {
           </span>
         )}
       </div>
+
+      {mostraModalRimozione && (
+        <ModalRichiediRimozione
+          onConferma={gestisciRichiestaRimozione}
+          onChiudi={() => setMostraModalRimozione(false)}
+        />
+      )}
     </article>
   )
 }
