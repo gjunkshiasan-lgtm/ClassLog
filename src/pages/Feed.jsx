@@ -45,6 +45,10 @@ export default function Feed() {
     }
   }
 
+  async function gestisciMetiMiPiace(postId) {
+    return chiamaFunzione('gestisci-like', { post_id: postId, utente_id: utente.id })
+  }
+
   return (
     <LayoutApp>
       {caricamento && (
@@ -77,7 +81,13 @@ export default function Feed() {
       {!caricamento && !errore && post.length > 0 && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
           {post.map((p) => (
-            <PostCard key={p.id} post={p} onSegnala={gestisciSegnalazione} onRichiediRimozione={gestisciRichiestaRimozione} />
+            <PostCard
+              key={p.id}
+              post={p}
+              onSegnala={gestisciSegnalazione}
+              onRichiediRimozione={gestisciRichiestaRimozione}
+              onMetiMiPiace={gestisciMetiMiPiace}
+            />
           ))}
         </div>
       )}

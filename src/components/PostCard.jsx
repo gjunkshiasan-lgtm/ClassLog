@@ -2,11 +2,14 @@
 import { tempoRelativo, ETICHETTE_CATEGORIE } from '../lib/formattazione'
 import ModalRichiediRimozione from './ModalRichiediRimozione'
 
-export default function PostCard({ post, onSegnala, onRichiediRimozione }) {
+export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiMiPiace }) {
   const [segnalazioneInviata, setSegnalazioneInviata] = useState(false)
   const [mostraConfermaSegnalazione, setMostraConfermaSegnalazione] = useState(false)
   const [mostraModalRimozione, setMostraModalRimozione] = useState(false)
   const [richiestaRimozioneInviata, setRichiestaRimozioneInviata] = useState(false)
+  const [miPiaceAttivo, setMiPiaceAttivo] = useState(post.mi_piace_attivo)
+  const [numeroMiPiace, setNumeroMiPiace] = useState(post.numero_mi_piace)
+  const [elaborandoLike, setElaborandoLike] = useState(false)
 
   async function gestisciSegnalazione() {
     await onSegnala(post.id)
@@ -18,6 +21,26 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione }) {
     await onRichiediRimozione(post.id, motivo)
     setRichiestaRimozioneInviata(true)
     setMostraModalRimozione(false)
+  }
+
+  async function gestisciLike() {
+    if (elaborandoLike) return
+    setElaborandoLike(true)
+    const statoPrecedente = miPiaceAttivo
+    const conteggioPrecedente = numeroMiPiace
+    setMiPiaceAttivo(!statoPrecedente)
+    setNumeroMiPiace(statoPrecedente ? conteggioPrecedente - 1 : conteggioPrecedente + 1)
+
+    try {
+      const risposta = await onMetiMiPiace(post.id)
+      setMiPiaceAttivo(risposta.mi_piace_attivo)
+      setNumeroMiPiace(risposta.numero_mi_piace)
+    } catch (err) {
+      setMiPiaceAttivo(statoPrecedente)
+      setNumeroMiPiace(conteggioPrecedente)
+    } finally {
+      setElaborandoLike(false)
+    }
   }
 
   if (segnalazioneInviata) {
@@ -55,10 +78,17 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione }) {
       )}
 
       <div className="post-card-azioni" style={{ flexWrap: 'wrap' }}>
-        <span className="post-card-azione-btn" style={{ cursor: 'default' }}>
-          <span aria-hidden="true">❤️</span>
-          <span>{post.numero_mi_piace}</span>
-        </span>
+        <button
+          type="button"
+          className={`post-card-azione-btn like-btn ${miPiaceAttivo ? 'like-attivo' : ''}`}
+          onClick={gestisciLike}
+          disabled={elaborandoLike}
+          aria-pressed={miPiaceAttivo}
+          aria-label={miPiaceAttivo ? 'Togli mi piace' : 'Metti mi piace'}
+        >
+          <span aria-hidden="true">{miPiaceAttivo ? '❤️' : '🤍'}</span>
+          <span>{numeroMiPiace}</span>
+        </button>
 
         {!richiestaRimozioneInviata && (
           <button
