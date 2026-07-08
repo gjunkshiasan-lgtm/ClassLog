@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+﻿import { useState, useRef } from 'react'
 import { tempoRelativo, ETICHETTE_CATEGORIE } from '../lib/formattazione'
 import ModalRichiediRimozione from './ModalRichiediRimozione'
 
@@ -10,6 +10,7 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
   const [miPiaceAttivo, setMiPiaceAttivo] = useState(Boolean(post.mi_piace_attivo))
   const [numeroMiPiace, setNumeroMiPiace] = useState(Number(post.numero_mi_piace) || 0)
   const [elaborandoLike, setElaborandoLike] = useState(false)
+  const richiestaInCorso = useRef(false)
 
   async function gestisciSegnalazione() {
     await onSegnala(post.id)
@@ -24,7 +25,8 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
   }
 
   async function gestisciLike() {
-    if (elaborandoLike) return
+    if (richiestaInCorso.current) return
+    richiestaInCorso.current = true
     setElaborandoLike(true)
     const statoPrecedente = miPiaceAttivo
     const conteggioPrecedente = numeroMiPiace
@@ -40,6 +42,7 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
       setNumeroMiPiace(conteggioPrecedente)
     } finally {
       setElaborandoLike(false)
+      richiestaInCorso.current = false
     }
   }
 
@@ -144,4 +147,5 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
     </article>
   )
 }
+
 
