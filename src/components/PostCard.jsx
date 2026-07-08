@@ -7,8 +7,8 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
   const [mostraConfermaSegnalazione, setMostraConfermaSegnalazione] = useState(false)
   const [mostraModalRimozione, setMostraModalRimozione] = useState(false)
   const [richiestaRimozioneInviata, setRichiestaRimozioneInviata] = useState(false)
-  const [miPiaceAttivo, setMiPiaceAttivo] = useState(post.mi_piace_attivo)
-  const [numeroMiPiace, setNumeroMiPiace] = useState(post.numero_mi_piace)
+  const [miPiaceAttivo, setMiPiaceAttivo] = useState(Boolean(post.mi_piace_attivo))
+  const [numeroMiPiace, setNumeroMiPiace] = useState(Number(post.numero_mi_piace) || 0)
   const [elaborandoLike, setElaborandoLike] = useState(false)
 
   async function gestisciSegnalazione() {
@@ -33,8 +33,8 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
 
     try {
       const risposta = await onMetiMiPiace(post.id)
-      setMiPiaceAttivo(risposta.mi_piace_attivo)
-      setNumeroMiPiace(risposta.numero_mi_piace)
+      setMiPiaceAttivo(Boolean(risposta.mi_piace_attivo))
+      setNumeroMiPiace(Number(risposta.numero_mi_piace) || 0)
     } catch (err) {
       setMiPiaceAttivo(statoPrecedente)
       setNumeroMiPiace(conteggioPrecedente)
@@ -144,3 +144,4 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
     </article>
   )
 }
+

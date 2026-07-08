@@ -1096,3 +1096,43 @@ button, input, textarea {
   background-color: var(--color-tertiary-container);
   color: var(--color-on-tertiary-container);
 }
+
+/* ---------- Pagina Regole e Privacy ---------- */
+.regole-pagina {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: var(--space-lg) var(--space-md) 100px var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.regole-sezione {
+  background-color: var(--color-surface-container-low);
+  border: 2px solid var(--color-outline-variant);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.regole-sezione h3 {
+  margin: 0;
+  color: var(--color-primary-fixed-dim);
+  font-size: 18px;
+}
+
+.regole-sezione p, .regole-sezione li {
+  color: var(--color-on-surface);
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.regole-sezione ul {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
