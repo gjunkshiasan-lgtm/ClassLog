@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { tempoRelativo, ETICHETTE_CATEGORIE } from '../lib/formattazione'
@@ -7,10 +7,10 @@ import LayoutApp from '../components/LayoutApp'
 function AccessoNegato() {
   return (
     <div className="stato-vuoto">
-      <span style={{ fontSize: 40 }}>🔒</span>
+      <span style={{ fontSize: 40 }}>ðŸ”’</span>
       <h3 className="text-headline-md" style={{ margin: 0 }}>Accesso Riservato</h3>
       <p className="text-body-md">
-        Questa sezione è visibile solo agli Admin e al ROOT della classe.
+        Questa sezione Ã¨ visibile solo agli Admin e al ROOT della classe.
         Se pensi sia un errore, contatta il ROOT della tua classe per essere promosso.
       </p>
     </div>
@@ -35,7 +35,7 @@ function CardModerazione({ post, onModera }) {
           {ETICHETTE_CATEGORIE[post.categoria] ?? post.categoria}
         </span>
         <span className="admin-card-id">
-          {eSegnalato ? `🚩 SEGNALATO (${post.numero_segnalazioni})` : `ID: #${post.id.slice(0, 6).toUpperCase()}`}
+          {eSegnalato ? `ðŸš© SEGNALATO (${post.numero_segnalazioni})` : `ID: #${post.id.slice(0, 6).toUpperCase()}`}
         </span>
       </div>
 
@@ -45,10 +45,10 @@ function CardModerazione({ post, onModera }) {
 
       <div className="admin-card-azioni">
         <button className="btn-approva" onClick={() => gestisci('approva')} disabled={elaborando}>
-          ✅ Approva
+          âœ… Approva
         </button>
         <button className="btn-rifiuta" onClick={() => gestisci('rifiuta')} disabled={elaborando}>
-          ⊗ Rifiuta
+          âŠ— Rifiuta
         </button>
       </div>
     </div>
@@ -118,14 +118,14 @@ function CodaApprovazione({ utente }) {
 
       {!caricamento && errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true">âš ï¸</span>
           <span>{errore}</span>
         </div>
       )}
 
       {!caricamento && !errore && post.length === 0 && (
         <div className="stato-vuoto">
-          <span style={{ fontSize: 32 }}>✅</span>
+          <span style={{ fontSize: 32 }}>âœ…</span>
           <p className="text-body-md">Nessuna cronaca in attesa. Tutto sotto controllo!</p>
         </div>
       )}
@@ -205,7 +205,7 @@ function FormBanUtente({ utenteTarget, motiviPredefiniti, onBanna, onAnnulla }) 
 
       <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
         <button className="btn-rifiuta" style={{ flex: 1 }} onClick={gestisciConferma} disabled={inviando || !motivo.trim()}>
-          {inviando ? <span className="spinner" aria-hidden="true" /> : `🚫 Banna per ${giorni}g`}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : `ðŸš« Banna per ${giorni}g`}
         </button>
         <button className="btn-azione-piccolo" onClick={onAnnulla} disabled={inviando}>Annulla</button>
       </div>
@@ -228,7 +228,7 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
 
       {u.bannato_attualmente && (
         <span style={{ fontSize: 13, color: 'var(--color-error)' }}>
-          Motivo: {u.motivo_ban} — fino al {new Date(u.bannato_fino_a).toLocaleDateString('it-IT')}
+          Motivo: {u.motivo_ban} â€” fino al {new Date(u.bannato_fino_a).toLocaleDateString('it-IT')}
         </span>
       )}
 
@@ -236,11 +236,11 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
         <div className="riga-utente-azioni">
           {u.bannato_attualmente ? (
             <button className="btn-azione-piccolo" onClick={() => onRimuoviBan(u.id)}>
-              ✅ Rimuovi Ban
+              âœ… Rimuovi Ban
             </button>
           ) : (
             <button className="btn-azione-piccolo pericolo" onClick={() => setMostraFormBan(!mostraFormBan)}>
-              🚫 Banna
+              ðŸš« Banna
             </button>
           )}
 
@@ -250,7 +250,7 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
             </button>
           ) : (
             <button className="btn-azione-piccolo" onClick={() => onPromuovi(u.id)}>
-              ⬆️ Promuovi Admin
+              â¬†ï¸ Promuovi Admin
             </button>
           )}
         </div>
@@ -319,7 +319,7 @@ function ZonaPericolo({ utente }) {
   if (completato) {
     return (
       <div className="zona-pericolo">
-        <span style={{ fontSize: 32 }}>💥</span>
+        <span style={{ fontSize: 32 }}>ðŸ’¥</span>
         <p className="text-body-md">
           La classe e tutti i suoi dati sono stati eliminati permanentemente.
           Puoi chiudere questa pagina o uscire dall'account.
@@ -331,7 +331,7 @@ function ZonaPericolo({ utente }) {
   return (
     <div className="zona-pericolo">
       <div className="zona-pericolo-titolo">
-        <span aria-hidden="true">⚠️</span>
+        <span aria-hidden="true">âš ï¸</span>
         <span>Zona Pericolo</span>
       </div>
       <p className="text-body-md" style={{ margin: 0, color: 'var(--color-on-surface-variant)', fontSize: 14 }}>
@@ -340,24 +340,24 @@ function ZonaPericolo({ utente }) {
 
       {errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true">âš ï¸</span>
           <span>{errore}</span>
         </div>
       )}
 
       <button className="btn-zona-pericolo" onClick={gestisciBackup} disabled={scaricando}>
-        {scaricando ? <span className="spinner" aria-hidden="true" /> : <>⬇️ Scarica Backup (Solo Testo)</>}
+        {scaricando ? <span className="spinner" aria-hidden="true" /> : <>â¬‡ï¸ Scarica Backup (Solo Testo)</>}
       </button>
 
       {!mostraConferma ? (
         <button className="btn-autodistruzione" onClick={() => setMostraConferma(true)}>
-          🗑️ Autodistruzione di Fine Anno
+          ðŸ—‘ï¸ Autodistruzione di Fine Anno
         </button>
       ) : (
         <div className="conferma-autodistruzione-box">
           <p className="text-body-md" style={{ margin: 0 }}>
-            Questa azione cancellerà <strong>permanentemente</strong> tutte le cronache, gli utenti e la classe stessa.
-            Non può essere annullata. Scarica prima il backup se vuoi conservare le cronache.
+            Questa azione cancellerÃ  <strong>permanentemente</strong> tutte le cronache, gli utenti e la classe stessa.
+            Non puÃ² essere annullata. Scarica prima il backup se vuoi conservare le cronache.
           </p>
           <div className="campo-input-wrap">
             <input
@@ -447,7 +447,7 @@ function GestioneUtenti({ utente }) {
 
       {errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true">âš ï¸</span>
           <span>{errore}</span>
         </div>
       )}
@@ -481,9 +481,9 @@ function CardRichiestaRimozione({ richiesta, onDecidi }) {
   return (
     <div className="card-richiesta-rimozione">
       <span className="text-label-caps" style={{ color: 'var(--color-tertiary-container)' }}>
-        🙈 Richiesta di Rimozione
+        ðŸ™ˆ Richiesta di Rimozione
       </span>
-      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>{richiesta.post?.titolo ?? '(cronaca non più disponibile)'}</h4>
+      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>{richiesta.post?.titolo ?? '(cronaca non piÃ¹ disponibile)'}</h4>
       {richiesta.post?.contenuto && (
         <p className="post-card-contenuto">{richiesta.post.contenuto}</p>
       )}
@@ -496,10 +496,10 @@ function CardRichiestaRimozione({ richiesta, onDecidi }) {
 
       <div className="admin-card-azioni">
         <button className="btn-accoglie" onClick={() => gestisci('accoglie')} disabled={elaborando}>
-          ✅ Accogli (rimuovi)
+          âœ… Accogli (rimuovi)
         </button>
         <button className="btn-rifiuta" onClick={() => gestisci('rifiuta')} disabled={elaborando}>
-          ⊗ Rifiuta richiesta
+          âŠ— Rifiuta richiesta
         </button>
       </div>
     </div>
@@ -556,20 +556,124 @@ function RichiesteRimozione({ utente }) {
 
       {!caricamento && errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">⚠️</span>
+          <span aria-hidden="true">âš ï¸</span>
           <span>{errore}</span>
         </div>
       )}
 
       {!caricamento && !errore && richieste.length === 0 && (
         <div className="stato-vuoto">
-          <span style={{ fontSize: 32 }}>✅</span>
+          <span style={{ fontSize: 32 }}>âœ…</span>
           <p className="text-body-md">Nessuna richiesta di rimozione in attesa.</p>
         </div>
       )}
 
       {!caricamento && richieste.map((r) => (
         <CardRichiestaRimozione key={r.id} richiesta={r} onDecidi={gestisciDecisione} />
+      ))}
+    </div>
+  )
+}
+
+function CardSegnalazioneUtente({ segnalazione, onArchivia }) {
+  const [elaborando, setElaborando] = useState(false)
+
+  async function gestisci() {
+    setElaborando(true)
+    await onArchivia(segnalazione.id)
+    setElaborando(false)
+  }
+
+  return (
+    <div className="card-richiesta-rimozione">
+      <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>
+         Segnalazione Utente
+      </span>
+      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>
+        @{segnalazione.utenti?.nickname ?? '(utente non piu disponibile)'}
+        {segnalazione.utenti?.ruolo && segnalazione.utenti.ruolo !== 'studente' && (
+          <span className="badge-moderatore" style={{ marginLeft: 8, verticalAlign: 'middle' }}>
+            {segnalazione.utenti.ruolo}
+          </span>
+        )}
+      </h4>
+      {segnalazione.motivo && (
+        <p className="post-card-contenuto">{segnalazione.motivo}</p>
+      )}
+      <span className="post-card-tempo">{tempoRelativo(segnalazione.creata_il)}</span>
+
+      <div className="admin-card-azioni">
+        <button className="btn-approva" onClick={gestisci} disabled={elaborando}>
+          Segna come esaminata
+        </button>
+      </div>
+    </div>
+  )
+}
+
+function SegnalazioniUtenti({ utente }) {
+  const [segnalazioni, setSegnalazioni] = useState([])
+  const [caricamento, setCaricamento] = useState(true)
+  const [errore, setErrore] = useState('')
+
+  const caricaSegnalazioni = useCallback(async () => {
+    setErrore('')
+    try {
+      const risposta = await chiamaFunzione('admin-segnalazioni-utenti', { azione: 'lista', utente_id: utente.id })
+      setSegnalazioni(risposta.segnalazioni)
+    } catch (err) {
+      setErrore(err.message)
+    } finally {
+      setCaricamento(false)
+    }
+  }, [utente.id])
+
+  useEffect(() => {
+    caricaSegnalazioni()
+  }, [caricaSegnalazioni])
+
+  async function gestisciArchiviazione(segnalazioneId) {
+    try {
+      await chiamaFunzione('admin-segnalazioni-utenti', {
+        azione: 'archivia',
+        utente_id: utente.id,
+        segnalazione_id: segnalazioneId,
+      })
+      setSegnalazioni((prec) => prec.filter((s) => s.id !== segnalazioneId))
+    } catch (err) {
+      setErrore(err.message)
+    }
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3 className="text-headline-md" style={{ margin: 0, fontSize: 18 }}>Segnalazioni Utenti</h3>
+        <span className="admin-badge-coda">{segnalazioni.length} in attesa</span>
+      </div>
+
+      {caricamento && (
+        <div className="stato-vuoto">
+          <span className="spinner" aria-hidden="true" style={{ width: 28, height: 28 }} />
+        </div>
+      )}
+
+      {!caricamento && errore && (
+        <div className="messaggio-errore" role="alert">
+          <span aria-hidden="true"></span>
+          <span>{errore}</span>
+        </div>
+      )}
+
+      {!caricamento && !errore && segnalazioni.length === 0 && (
+        <div className="stato-vuoto">
+          <span style={{ fontSize: 32 }}></span>
+          <p className="text-body-md">Nessuna segnalazione utente in attesa.</p>
+        </div>
+      )}
+
+      {!caricamento && segnalazioni.map((s) => (
+        <CardSegnalazioneUtente key={s.id} segnalazione={s} onArchivia={gestisciArchiviazione} />
       ))}
     </div>
   )
@@ -596,6 +700,12 @@ function DashboardAdmin({ utente }) {
         >
           Richieste Rimozione
         </button>
+        <button
+          className={`root-tab-btn ${tab === 'segnalazioni-utenti' ? 'attivo' : ''}`}
+          onClick={() => setTab('segnalazioni-utenti')}
+        >
+          Segnalazioni Utenti
+        </button>
         {eRoot && (
           <button
             className={`root-tab-btn ${tab === 'utenti' ? 'attivo' : ''}`}
@@ -608,6 +718,7 @@ function DashboardAdmin({ utente }) {
 
       {tab === 'coda' && <CodaApprovazione utente={utente} />}
       {tab === 'rimozioni' && <RichiesteRimozione utente={utente} />}
+      {tab === 'segnalazioni-utenti' && <SegnalazioniUtenti utente={utente} />}
       {tab === 'utenti' && eRoot && <GestioneUtenti utente={utente} />}
     </div>
   )
@@ -623,3 +734,5 @@ export default function Admin() {
     </LayoutApp>
   )
 }
+
+

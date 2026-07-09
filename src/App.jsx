@@ -9,6 +9,7 @@ import CreaPost from './pages/CreaPost'
 import Admin from './pages/Admin'
 import Profilo from './pages/Profilo'
 import Impostazioni from './pages/Impostazioni'
+import MembriClasse from './pages/MembriClasse'
 import RegolePrivacy from './pages/RegolePrivacy'
 import Bannato from './pages/Bannato'
 
@@ -60,6 +61,14 @@ function App() {
               element={
                 <RottaProtetta>
                   <Impostazioni />
+                </RottaProtetta>
+              }
+            />
+            <Route
+              path="/membri"
+              element={
+                <RottaProtetta>
+                  <MembriClasse />
                 </RottaProtetta>
               }
             />
