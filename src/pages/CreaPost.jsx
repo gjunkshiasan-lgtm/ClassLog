@@ -1,18 +1,62 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
 
 const LIMITE_CARATTERI = 500
+const CATEGORIA_DEFAULT = 'generale'
 
-const CATEGORIE = [
-  { valore: 'confessione', etichetta: '#Confessione' },
-  { valore: 'gossip', etichetta: '#Gossip' },
-  { valore: 'sfogo', etichetta: '#Sfogo' },
-  { valore: 'cotta', etichetta: '#Cotta' },
-  { valore: 'personalizzato', etichetta: '#Personalizzato' },
+const DOMANDE_SPUNTO = [
+  'Cosa è successo oggi in classe?',
+  "C'è qualcosa che ti ha fatto ridere di recente?",
+  'Un segreto che vuoi condividere?',
+  "Qual è stato il momento più imbarazzante della settimana?",
+  "C'è un episodio buffo successo durante una lezione?",
+  'Cosa vorresti dire alla classe ma non hai mai detto?',
 ]
+
+function SpuntoScrittura({ onScegliSpunto, disabled }) {
+  const [aperto, setAperto] = useState(false)
+
+  return (
+    <div className="neo-card" style={{ gap: 'var(--space-sm)' }}>
+      <button
+        type="button"
+        onClick={() => setAperto(!aperto)}
+        disabled={disabled}
+        style={{
+          background: 'none', border: 'none', color: 'var(--color-primary-fixed-dim)',
+          fontFamily: 'inherit', fontSize: 15, fontWeight: 600, cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', padding: 0,
+        }}
+      >
+        <span>💡 Non sai cosa scrivere?</span>
+        <span aria-hidden="true">{aperto ? '▲' : '▼'}</span>
+      </button>
+
+      {aperto && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)' }}>
+          <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-on-surface-variant)' }}>
+            Tocca una domanda per iniziare a scrivere da lì (opzionale):
+          </p>
+          {DOMANDE_SPUNTO.map((domanda) => (
+            <button
+              key={domanda}
+              type="button"
+              className="chip-categoria"
+              style={{ textAlign: 'left', width: '100%' }}
+              onClick={() => onScegliSpunto(domanda)}
+              disabled={disabled}
+            >
+              {domanda}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function CreaPost() {
   const navigate = useNavigate()
@@ -20,10 +64,18 @@ export default function CreaPost() {
 
   const [titolo, setTitolo] = useState('')
   const [contenuto, setContenuto] = useState('')
-  const [categoria, setCategoria] = useState('confessione')
   const [inviando, setInviando] = useState(false)
   const [errore, setErrore] = useState('')
   const [successo, setSuccesso] = useState('')
+
+  function gestisciScegliSpunto(domanda) {
+    if (!contenuto.trim()) {
+      setContenuto(`${domanda}\n\n`)
+    }
+    if (!titolo.trim()) {
+      setTitolo(domanda.length > 60 ? domanda.slice(0, 57) + '...' : domanda)
+    }
+  }
 
   async function gestisciInvio(e) {
     e.preventDefault()
@@ -41,13 +93,12 @@ export default function CreaPost() {
         autore_id: utente.id,
         titolo: titolo.trim(),
         contenuto: contenuto.trim(),
-        categoria,
+        categoria: CATEGORIA_DEFAULT,
       })
 
       setSuccesso(risposta.messaggio)
       setTitolo('')
       setContenuto('')
-      setCategoria('confessione')
 
       setTimeout(() => navigate('/feed'), 1800)
     } catch (err) {
@@ -69,6 +120,8 @@ export default function CreaPost() {
       </div>
 
       <h2 className="text-headline-md" style={{ margin: 0 }}>Nuova Cronaca</h2>
+
+      <SpuntoScrittura onScegliSpunto={gestisciScegliSpunto} disabled={inviando} />
 
       <form onSubmit={gestisciInvio} style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
         <div className="campo-input-wrap">
@@ -98,20 +151,6 @@ export default function CreaPost() {
             <span>🟢 Filtro: Attivo</span>
             <span>{contenuto.length} / {LIMITE_CARATTERI}</span>
           </div>
-        </div>
-
-        <div className="griglia-chip">
-          {CATEGORIE.map((c) => (
-            <button
-              type="button"
-              key={c.valore}
-              className={`chip-categoria ${categoria === c.valore ? 'selezionata' : ''}`}
-              onClick={() => setCategoria(c.valore)}
-              disabled={inviando}
-            >
-              {c.etichetta}
-            </button>
-          ))}
         </div>
 
         {errore && (

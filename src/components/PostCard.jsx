@@ -1,5 +1,5 @@
 ﻿import { useState, useRef } from 'react'
-import { tempoRelativo, ETICHETTE_CATEGORIE } from '../lib/formattazione'
+import { tempoRelativo } from '../lib/formattazione'
 import ModalRichiediRimozione from './ModalRichiediRimozione'
 
 export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiMiPiace }) {
@@ -65,10 +65,6 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
         </div>
         <span className="post-card-tempo">{tempoRelativo(post.creato_il)}</span>
       </div>
-
-      <span className="post-card-categoria-chip">
-        {ETICHETTE_CATEGORIE[post.categoria] ?? post.categoria}
-      </span>
 
       <h3 className="post-card-titolo">{post.titolo}</h3>
       <p className="post-card-contenuto">{post.contenuto}</p>
@@ -147,5 +143,6 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
     </article>
   )
 }
+
 
 

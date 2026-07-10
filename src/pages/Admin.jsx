@@ -1,7 +1,7 @@
 ﻿import { useState, useEffect, useCallback } from 'react'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
-import { tempoRelativo, ETICHETTE_CATEGORIE } from '../lib/formattazione'
+import { tempoRelativo } from '../lib/formattazione'
 import LayoutApp from '../components/LayoutApp'
 
 function AccessoNegato() {
@@ -30,10 +30,7 @@ function CardModerazione({ post, onModera }) {
 
   return (
     <div className={`admin-card-moderazione ${eSegnalato ? 'segnalato' : ''}`}>
-      <div className="admin-card-header">
-        <span className="post-card-categoria-chip">
-          {ETICHETTE_CATEGORIE[post.categoria] ?? post.categoria}
-        </span>
+      <div className="admin-card-header" style={{ justifyContent: 'flex-end' }}>
         <span className="admin-card-id">
           {eSegnalato ? `ðŸš© SEGNALATO (${post.numero_segnalazioni})` : `ID: #${post.id.slice(0, 6).toUpperCase()}`}
         </span>
@@ -734,5 +731,6 @@ export default function Admin() {
     </LayoutApp>
   )
 }
+
 
 

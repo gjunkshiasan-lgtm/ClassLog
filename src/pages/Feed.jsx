@@ -1,21 +1,33 @@
-import { useState, useEffect, useCallback } from 'react'
+﻿import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
 import PostCard from '../components/PostCard'
+import BannerBroadcast from '../components/BannerBroadcast'
 
 export default function Feed() {
   const { utente } = useAuth()
   const [post, setPost] = useState([])
+  const [broadcast, setBroadcast] = useState([])
   const [caricamento, setCaricamento] = useState(true)
   const [errore, setErrore] = useState('')
 
   const caricaFeed = useCallback(async () => {
     setErrore('')
     try {
-      const risposta = await chiamaFunzione('ottieni-post', { utente_id: utente.id })
-      setPost(risposta.post)
+      const [rispostaPost, rispostaBroadcast] = await Promise.all([
+        chiamaFunzione('ottieni-post', { utente_id: utente.id }),
+        chiamaFunzione('ottieni-broadcast', { utente_id: utente.id }).catch(() => ({ broadcast: [] })),
+      ])
+
+      const postNormalizzati = rispostaPost.post.map((p) => ({
+        ...p,
+        numero_mi_piace: Number(p.numero_mi_piace) || 0,
+        mi_piace_attivo: Boolean(p.mi_piace_attivo),
+      }))
+      setPost(postNormalizzati)
+      setBroadcast(rispostaBroadcast.broadcast ?? [])
     } catch (err) {
       setErrore(err.message)
     } finally {
@@ -31,8 +43,6 @@ export default function Feed() {
     try {
       await chiamaFunzione('segnala-post', { post_id: postId, utente_id: utente.id })
     } catch (err) {
-      // Anche in caso di errore nel salvataggio, non blocchiamo l'interfaccia:
-      // mostriamo comunque la conferma visiva per non scoraggiare la segnalazione.
       console.error(err)
     }
   }
@@ -51,6 +61,8 @@ export default function Feed() {
 
   return (
     <LayoutApp>
+      {!caricamento && broadcast.length > 0 && <BannerBroadcast broadcast={broadcast} />}
+
       {caricamento && (
         <div className="stato-vuoto">
           <span className="spinner" aria-hidden="true" style={{ width: 32, height: 32 }} />
