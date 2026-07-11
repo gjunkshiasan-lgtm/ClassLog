@@ -1229,3 +1229,68 @@ button, input, textarea {
   padding: 4px;
   flex-shrink: 0;
 }
+
+/* ---------- Onboarding ---------- */
+.onboarding-pagina {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-md);
+  max-width: 480px;
+  margin: 0 auto;
+  gap: var(--space-lg);
+}
+
+.onboarding-step {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  flex: 1;
+  justify-content: center;
+}
+
+.onboarding-icona {
+  font-size: 48px;
+  text-align: center;
+}
+
+.onboarding-puntini {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.onboarding-puntino {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-outline-variant);
+}
+.onboarding-puntino.attivo {
+  background-color: var(--color-primary-fixed-dim);
+}
+
+.blocco-responsabilita {
+  background-color: var(--color-surface-container-lowest);
+  border: 2px solid var(--color-tertiary-container);
+  padding: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.checkbox-responsabilita {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  cursor: pointer;
+}
+
+.checkbox-responsabilita input {
+  margin-top: 3px;
+  accent-color: var(--color-primary-fixed-dim);
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}

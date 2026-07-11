@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -68,6 +68,7 @@ function FormEntraClasse({ nicknamePreview }) {
 
   const [codiceClasse, setCodiceClasse] = useState('')
   const [password, setPassword] = useState('')
+  const [accettaRegole, setAccettaRegole] = useState(false)
   const [inviando, setInviando] = useState(false)
   const [errore, setErrore] = useState('')
 
@@ -81,6 +82,10 @@ function FormEntraClasse({ nicknamePreview }) {
     }
     if (password.length < 6) {
       setErrore('La password deve avere almeno 6 caratteri.')
+      return
+    }
+    if (!accettaRegole) {
+      setErrore('Devi accettare le Regole della Community per entrare nella classe.')
       return
     }
 
@@ -147,6 +152,27 @@ function FormEntraClasse({ nicknamePreview }) {
           </div>
         </div>
 
+        <label className="checkbox-responsabilita">
+          <input
+            type="checkbox"
+            checked={accettaRegole}
+            onChange={(e) => setAccettaRegole(e.target.checked)}
+            disabled={inviando}
+          />
+          <span className="text-body-md" style={{ fontSize: 14 }}>
+            Ho letto e accetto le{' '}
+            <button
+              type="button"
+              className="link-testuale"
+              style={{ fontSize: 14 }}
+              onClick={(e) => { e.preventDefault(); window.open('/regole', '_blank') }}
+            >
+              Regole della Community e la Privacy
+            </button>
+            .
+          </span>
+        </label>
+
         {errore && (
           <div className="messaggio-errore" role="alert">
             <span aria-hidden="true">⚠️</span>
@@ -154,7 +180,7 @@ function FormEntraClasse({ nicknamePreview }) {
           </div>
         )}
 
-        <button type="submit" className="btn-brutalist btn-primary" disabled={inviando}>
+        <button type="submit" className="btn-brutalist btn-primary" disabled={inviando || !accettaRegole}>
           {inviando ? <span className="spinner" aria-hidden="true" /> : <>Entra nella Classe →</>}
         </button>
       </div>
@@ -169,6 +195,8 @@ function FormCreaClasse({ nicknamePreview }) {
   const [nomeClasse, setNomeClasse] = useState('')
   const [codiceClasse, setCodiceClasse] = useState('')
   const [password, setPassword] = useState('')
+  const [accettaResponsabilita, setAccettaResponsabilita] = useState(false)
+  const [accettaRegole, setAccettaRegole] = useState(false)
   const [inviando, setInviando] = useState(false)
   const [errore, setErrore] = useState('')
 
@@ -186,6 +214,14 @@ function FormCreaClasse({ nicknamePreview }) {
     }
     if (codiceClasse.trim().length < 4) {
       setErrore('Il Codice Classe deve avere almeno 4 caratteri.')
+      return
+    }
+    if (!accettaResponsabilita) {
+      setErrore('Devi accettare le responsabilità del ROOT per creare una classe.')
+      return
+    }
+    if (!accettaRegole) {
+      setErrore('Devi accettare le Regole della Community per procedere.')
       return
     }
 
@@ -272,6 +308,51 @@ function FormCreaClasse({ nicknamePreview }) {
           </div>
         </div>
 
+        <div className="blocco-responsabilita">
+          <span className="text-label-caps" style={{ color: 'var(--color-tertiary-container)' }}>
+            ⚠️ Responsabilità del ROOT
+          </span>
+          <p style={{ margin: 0 }}>
+            Come creatore/creatrice di questa classe, diventerai responsabile della sua moderazione:
+            dovrai esaminare le cronache in attesa, gestire le segnalazioni con equità (comprese
+            quelle che risultano infondate), e intervenire in caso di comportamenti scorretti.
+            Un uso scorretto di questi poteri (bannare ingiustamente, ignorare segnalazioni gravi,
+            approvare contenuti vietati) può portare all'intervento diretto della Supervisione
+            della piattaforma, che può rimuoverti il ruolo di ROOT.
+          </p>
+          <label className="checkbox-responsabilita">
+            <input
+              type="checkbox"
+              checked={accettaResponsabilita}
+              onChange={(e) => setAccettaResponsabilita(e.target.checked)}
+              disabled={inviando}
+            />
+            <span className="text-body-md" style={{ fontSize: 14 }}>
+              Ho letto e accetto le responsabilità legate al ruolo di ROOT.
+            </span>
+          </label>
+          <label className="checkbox-responsabilita">
+            <input
+              type="checkbox"
+              checked={accettaRegole}
+              onChange={(e) => setAccettaRegole(e.target.checked)}
+              disabled={inviando}
+            />
+            <span className="text-body-md" style={{ fontSize: 14 }}>
+              Ho letto e accetto le{' '}
+              <button
+                type="button"
+                className="link-testuale"
+                style={{ fontSize: 14 }}
+                onClick={(e) => { e.preventDefault(); window.open('/regole', '_blank') }}
+              >
+                Regole della Community e la Privacy
+              </button>
+              .
+            </span>
+          </label>
+        </div>
+
         {errore && (
           <div className="messaggio-errore" role="alert">
             <span aria-hidden="true">⚠️</span>
@@ -279,7 +360,11 @@ function FormCreaClasse({ nicknamePreview }) {
           </div>
         )}
 
-        <button type="submit" className="btn-brutalist btn-primary-container" disabled={inviando}>
+        <button
+          type="submit"
+          className="btn-brutalist btn-primary-container"
+          disabled={inviando || !accettaResponsabilita || !accettaRegole}
+        >
           {inviando ? <span className="spinner" aria-hidden="true" /> : <>👑 Crea Classe e Diventa ROOT</>}
         </button>
       </div>
@@ -291,10 +376,8 @@ export default function Benvenuto() {
   const navigate = useNavigate()
   const { utente, caricamento } = useAuth()
   const [nicknamePreview, setNicknamePreview] = useState(generaNicknamePreview())
-  const [tabAttivo, setTabAttivo] = useState('entra') // 'entra' | 'crea'
+  const [tabAttivo, setTabAttivo] = useState('entra')
 
-  // Se l'utente ha già una sessione valida salvata, non mostrargli di
-  // nuovo la schermata di registrazione: portalo direttamente al Feed.
   useEffect(() => {
     if (!caricamento && utente) {
       const eAncoraBannato = utente.bannato_fino_a && new Date(utente.bannato_fino_a) > new Date()
@@ -307,8 +390,6 @@ export default function Benvenuto() {
   }
 
   if (caricamento || utente) {
-    // Evitiamo di mostrare per un istante il form mentre il redirect
-    // sopra sta per scattare.
     return null
   }
 

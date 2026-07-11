@@ -2,6 +2,8 @@
 import { AuthProvider } from './lib/AuthContext'
 import { ZoomProvider } from './lib/ZoomContext'
 import RottaProtetta from './lib/RottaProtetta'
+import Ingresso from './pages/Ingresso'
+import Onboarding from './pages/Onboarding'
 import Benvenuto from './pages/Benvenuto'
 import Accedi from './pages/Accedi'
 import Feed from './pages/Feed'
@@ -19,7 +21,9 @@ function App() {
       <ZoomProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Benvenuto />} />
+            <Route path="/" element={<Ingresso />} />
+            <Route path="/onboarding" element={<Onboarding />} />
+            <Route path="/benvenuto" element={<Benvenuto />} />
             <Route path="/accedi" element={<Accedi />} />
             <Route path="/regole" element={<RegolePrivacy />} />
             <Route path="/bannato" element={<Bannato />} />
