@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { tempoRelativo } from '../lib/formattazione'
@@ -7,10 +7,10 @@ import LayoutApp from '../components/LayoutApp'
 function AccessoNegato() {
   return (
     <div className="stato-vuoto">
-      <span style={{ fontSize: 40 }}>ðŸ”’</span>
+      <span style={{ fontSize: 40 }}>🔒</span>
       <h3 className="text-headline-md" style={{ margin: 0 }}>Accesso Riservato</h3>
       <p className="text-body-md">
-        Questa sezione Ã¨ visibile solo agli Admin e al ROOT della classe.
+        Questa sezione è visibile solo agli Admin e al ROOT della classe.
         Se pensi sia un errore, contatta il ROOT della tua classe per essere promosso.
       </p>
     </div>
@@ -32,7 +32,7 @@ function CardModerazione({ post, onModera }) {
     <div className={`admin-card-moderazione ${eSegnalato ? 'segnalato' : ''}`}>
       <div className="admin-card-header" style={{ justifyContent: 'flex-end' }}>
         <span className="admin-card-id">
-          {eSegnalato ? `ðŸš© SEGNALATO (${post.numero_segnalazioni})` : `ID: #${post.id.slice(0, 6).toUpperCase()}`}
+          {eSegnalato ? `🚩 SEGNALATO (${post.numero_segnalazioni})` : `ID: #${post.id.slice(0, 6).toUpperCase()}`}
         </span>
       </div>
 
@@ -42,10 +42,10 @@ function CardModerazione({ post, onModera }) {
 
       <div className="admin-card-azioni">
         <button className="btn-approva" onClick={() => gestisci('approva')} disabled={elaborando}>
-          âœ… Approva
+          ✅ Approva
         </button>
         <button className="btn-rifiuta" onClick={() => gestisci('rifiuta')} disabled={elaborando}>
-          âŠ— Rifiuta
+          ⊗ Rifiuta
         </button>
       </div>
     </div>
@@ -115,14 +115,14 @@ function CodaApprovazione({ utente }) {
 
       {!caricamento && errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">âš ï¸</span>
+          <span aria-hidden="true">⚠️</span>
           <span>{errore}</span>
         </div>
       )}
 
       {!caricamento && !errore && post.length === 0 && (
         <div className="stato-vuoto">
-          <span style={{ fontSize: 32 }}>âœ…</span>
+          <span style={{ fontSize: 32 }}>✅</span>
           <p className="text-body-md">Nessuna cronaca in attesa. Tutto sotto controllo!</p>
         </div>
       )}
@@ -202,7 +202,7 @@ function FormBanUtente({ utenteTarget, motiviPredefiniti, onBanna, onAnnulla }) 
 
       <div style={{ display: 'flex', gap: 'var(--space-sm)' }}>
         <button className="btn-rifiuta" style={{ flex: 1 }} onClick={gestisciConferma} disabled={inviando || !motivo.trim()}>
-          {inviando ? <span className="spinner" aria-hidden="true" /> : `ðŸš« Banna per ${giorni}g`}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : `🚫 Banna per ${giorni}g`}
         </button>
         <button className="btn-azione-piccolo" onClick={onAnnulla} disabled={inviando}>Annulla</button>
       </div>
@@ -225,7 +225,7 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
 
       {u.bannato_attualmente && (
         <span style={{ fontSize: 13, color: 'var(--color-error)' }}>
-          Motivo: {u.motivo_ban} â€” fino al {new Date(u.bannato_fino_a).toLocaleDateString('it-IT')}
+          Motivo: {u.motivo_ban} — fino al {new Date(u.bannato_fino_a).toLocaleDateString('it-IT')}
         </span>
       )}
 
@@ -233,11 +233,11 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
         <div className="riga-utente-azioni">
           {u.bannato_attualmente ? (
             <button className="btn-azione-piccolo" onClick={() => onRimuoviBan(u.id)}>
-              âœ… Rimuovi Ban
+              ✅ Rimuovi Ban
             </button>
           ) : (
             <button className="btn-azione-piccolo pericolo" onClick={() => setMostraFormBan(!mostraFormBan)}>
-              ðŸš« Banna
+              🚫 Banna
             </button>
           )}
 
@@ -247,7 +247,7 @@ function RigaUtente({ u, onBanna, onRimuoviBan, onPromuovi, onRimuoviAdmin, moti
             </button>
           ) : (
             <button className="btn-azione-piccolo" onClick={() => onPromuovi(u.id)}>
-              â¬†ï¸ Promuovi Admin
+              ⬆️ Promuovi Admin
             </button>
           )}
         </div>
@@ -316,7 +316,7 @@ function ZonaPericolo({ utente }) {
   if (completato) {
     return (
       <div className="zona-pericolo">
-        <span style={{ fontSize: 32 }}>ðŸ’¥</span>
+        <span style={{ fontSize: 32 }}>💥</span>
         <p className="text-body-md">
           La classe e tutti i suoi dati sono stati eliminati permanentemente.
           Puoi chiudere questa pagina o uscire dall'account.
@@ -328,7 +328,7 @@ function ZonaPericolo({ utente }) {
   return (
     <div className="zona-pericolo">
       <div className="zona-pericolo-titolo">
-        <span aria-hidden="true">âš ï¸</span>
+        <span aria-hidden="true">⚠️</span>
         <span>Zona Pericolo</span>
       </div>
       <p className="text-body-md" style={{ margin: 0, color: 'var(--color-on-surface-variant)', fontSize: 14 }}>
@@ -337,24 +337,24 @@ function ZonaPericolo({ utente }) {
 
       {errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">âš ï¸</span>
+          <span aria-hidden="true">⚠️</span>
           <span>{errore}</span>
         </div>
       )}
 
       <button className="btn-zona-pericolo" onClick={gestisciBackup} disabled={scaricando}>
-        {scaricando ? <span className="spinner" aria-hidden="true" /> : <>â¬‡ï¸ Scarica Backup (Solo Testo)</>}
+        {scaricando ? <span className="spinner" aria-hidden="true" /> : <>⬇️ Scarica Backup (Solo Testo)</>}
       </button>
 
       {!mostraConferma ? (
         <button className="btn-autodistruzione" onClick={() => setMostraConferma(true)}>
-          ðŸ—‘ï¸ Autodistruzione di Fine Anno
+          🗑️ Autodistruzione di Fine Anno
         </button>
       ) : (
         <div className="conferma-autodistruzione-box">
           <p className="text-body-md" style={{ margin: 0 }}>
-            Questa azione cancellerÃ  <strong>permanentemente</strong> tutte le cronache, gli utenti e la classe stessa.
-            Non puÃ² essere annullata. Scarica prima il backup se vuoi conservare le cronache.
+            Questa azione cancellerà <strong>permanentemente</strong> tutte le cronache, gli utenti e la classe stessa.
+            Non può essere annullata. Scarica prima il backup se vuoi conservare le cronache.
           </p>
           <div className="campo-input-wrap">
             <input
@@ -444,7 +444,7 @@ function GestioneUtenti({ utente }) {
 
       {errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">âš ï¸</span>
+          <span aria-hidden="true">⚠️</span>
           <span>{errore}</span>
         </div>
       )}
@@ -478,9 +478,9 @@ function CardRichiestaRimozione({ richiesta, onDecidi }) {
   return (
     <div className="card-richiesta-rimozione">
       <span className="text-label-caps" style={{ color: 'var(--color-tertiary-container)' }}>
-        ðŸ™ˆ Richiesta di Rimozione
+        🙈 Richiesta di Rimozione
       </span>
-      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>{richiesta.post?.titolo ?? '(cronaca non piÃ¹ disponibile)'}</h4>
+      <h4 className="post-card-titolo" style={{ fontSize: 18 }}>{richiesta.post?.titolo ?? '(cronaca non più disponibile)'}</h4>
       {richiesta.post?.contenuto && (
         <p className="post-card-contenuto">{richiesta.post.contenuto}</p>
       )}
@@ -493,10 +493,10 @@ function CardRichiestaRimozione({ richiesta, onDecidi }) {
 
       <div className="admin-card-azioni">
         <button className="btn-accoglie" onClick={() => gestisci('accoglie')} disabled={elaborando}>
-          âœ… Accogli (rimuovi)
+          ✅ Accogli (rimuovi)
         </button>
         <button className="btn-rifiuta" onClick={() => gestisci('rifiuta')} disabled={elaborando}>
-          âŠ— Rifiuta richiesta
+          ⊗ Rifiuta richiesta
         </button>
       </div>
     </div>
@@ -553,14 +553,14 @@ function RichiesteRimozione({ utente }) {
 
       {!caricamento && errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true">âš ï¸</span>
+          <span aria-hidden="true">⚠️</span>
           <span>{errore}</span>
         </div>
       )}
 
       {!caricamento && !errore && richieste.length === 0 && (
         <div className="stato-vuoto">
-          <span style={{ fontSize: 32 }}>âœ…</span>
+          <span style={{ fontSize: 32 }}>✅</span>
           <p className="text-body-md">Nessuna richiesta di rimozione in attesa.</p>
         </div>
       )}
@@ -584,10 +584,10 @@ function CardSegnalazioneUtente({ segnalazione, onArchivia }) {
   return (
     <div className="card-richiesta-rimozione">
       <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>
-         Segnalazione Utente
+        🚩 Segnalazione Utente
       </span>
       <h4 className="post-card-titolo" style={{ fontSize: 18 }}>
-        @{segnalazione.utenti?.nickname ?? '(utente non piu disponibile)'}
+        @{segnalazione.utenti?.nickname ?? '(utente non più disponibile)'}
         {segnalazione.utenti?.ruolo && segnalazione.utenti.ruolo !== 'studente' && (
           <span className="badge-moderatore" style={{ marginLeft: 8, verticalAlign: 'middle' }}>
             {segnalazione.utenti.ruolo}
@@ -601,7 +601,7 @@ function CardSegnalazioneUtente({ segnalazione, onArchivia }) {
 
       <div className="admin-card-azioni">
         <button className="btn-approva" onClick={gestisci} disabled={elaborando}>
-          Segna come esaminata
+          ✅ Segna come esaminata
         </button>
       </div>
     </div>
@@ -657,14 +657,14 @@ function SegnalazioniUtenti({ utente }) {
 
       {!caricamento && errore && (
         <div className="messaggio-errore" role="alert">
-          <span aria-hidden="true"></span>
+          <span aria-hidden="true">⚠️</span>
           <span>{errore}</span>
         </div>
       )}
 
       {!caricamento && !errore && segnalazioni.length === 0 && (
         <div className="stato-vuoto">
-          <span style={{ fontSize: 32 }}></span>
+          <span style={{ fontSize: 32 }}>✅</span>
           <p className="text-body-md">Nessuna segnalazione utente in attesa.</p>
         </div>
       )}
@@ -731,6 +731,3 @@ export default function Admin() {
     </LayoutApp>
   )
 }
-
-
-

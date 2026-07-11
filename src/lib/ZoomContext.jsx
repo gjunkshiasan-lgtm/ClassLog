@@ -1,4 +1,4 @@
-﻿import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 
 const ZoomContext = createContext(null)
 const CHIAVE_STORAGE_ZOOM = 'classchronicles_zoom_testo'
@@ -15,6 +15,10 @@ export function ZoomProvider({ children }) {
   })
 
   useEffect(() => {
+    // Usiamo lo zoom nativo del browser (proprietà CSS "zoom"), che scala
+    // proporzionalmente TUTTO il layout: testo, bottoni, icone, spaziature.
+    // Il semplice font-size su :root, usato in precedenza, ridimensionava
+    // solo il testo lasciando invariati gli elementi con dimensioni fisse.
     document.documentElement.style.zoom = `${livelloZoom}%`
     localStorage.setItem(CHIAVE_STORAGE_ZOOM, String(livelloZoom))
   }, [livelloZoom])

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -86,7 +86,7 @@ export default function Accedi() {
               fontSize: 32,
             }}
           >
-            ðŸ›¡ï¸
+            🛡️
           </div>
           <h1 className="text-display-lg" style={{ margin: 0 }}>CLASS CHRONICLES</h1>
           <p
@@ -164,7 +164,7 @@ export default function Accedi() {
 
             {errore && (
               <div className="messaggio-errore" role="alert">
-                <span aria-hidden="true">âš ï¸</span>
+                <span aria-hidden="true">⚠️</span>
                 <span>{errore}</span>
               </div>
             )}
@@ -179,7 +179,7 @@ export default function Accedi() {
               }}
               disabled={inviando}
             >
-              {inviando ? <span className="spinner" aria-hidden="true" /> : <>Accedi â†ª</>}
+              {inviando ? <span className="spinner" aria-hidden="true" /> : <>Accedi ↪</>}
             </button>
 
             <div
@@ -197,7 +197,7 @@ export default function Accedi() {
                 Registrati
               </button>
               <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
-                ðŸŸ¢ Sistema Online
+                🟢 Sistema Online
               </span>
             </div>
           </div>
@@ -206,4 +206,3 @@ export default function Accedi() {
     </div>
   )
 }
-

@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 
 export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
   const [motivo, setMotivo] = useState('')
@@ -29,12 +29,12 @@ export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
             aria-label="Chiudi"
             style={{ background: 'none', border: 'none', color: 'var(--color-on-surface)', fontSize: 20, cursor: 'pointer' }}
           >
-            
+            ✕
           </button>
         </div>
 
         <div className="messaggio-errore" role="note" style={{ backgroundColor: 'var(--color-surface-container-lowest)' }}>
-          <span aria-hidden="true"></span>
+          <span aria-hidden="true">⚠️</span>
           <span>
             Usa questo strumento solo per comportamenti scorretti reali. Segnalazioni false o
             usate per vendette personali possono comportare restrizioni del tuo account.
@@ -59,7 +59,7 @@ export default function ModalSegnalaUtente({ nickname, onConferma, onChiudi }) {
           onClick={gestisciInvio}
           disabled={inviando || !motivo.trim()}
         >
-          {inviando ? <span className="spinner" aria-hidden="true" /> : <> Invia Segnalazione</>}
+          {inviando ? <span className="spinner" aria-hidden="true" /> : <>🚩 Invia Segnalazione</>}
         </button>
       </div>
     </div>

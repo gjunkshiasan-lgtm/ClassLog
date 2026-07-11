@@ -24,6 +24,8 @@ export default function Bannato() {
   }
 
   if (!utente?.bannato_fino_a) {
+    // Se per qualche motivo non ci sono dati di ban, torniamo al feed
+    // invece di mostrare una schermata vuota/rotta.
     navigate('/feed')
     return null
   }

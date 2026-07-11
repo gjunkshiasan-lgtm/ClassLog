@@ -1,5 +1,14 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 
+/**
+ * Mostra i broadcast attivi come banner in cima al Feed.
+ * Chiudere un banner lo nasconde solo per questa sessione del browser
+ * (non lo marca come "letto" nel database): se l'utente ricarica la
+ * pagina o il broadcast è ancora attivo, potrebbe ricomparire.
+ * Questo è intenzionale: i broadcast sono avvisi importanti (es. da
+ * parte del Supervisore) che non vogliamo si possano perdere per sempre
+ * con un click accidentale.
+ */
 export default function BannerBroadcast({ broadcast }) {
   const [idNascosti, setIdNascosti] = useState([])
 

@@ -1,4 +1,4 @@
-﻿import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 import { onboardingGiaVisto } from './Onboarding'
 
 export default function Ingresso() {

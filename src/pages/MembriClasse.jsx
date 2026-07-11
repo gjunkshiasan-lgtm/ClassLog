@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -18,18 +18,18 @@ function RigaMembro({ membro, onSegnala }) {
   return (
     <div className="riga-membro">
       <div className="riga-membro-nome">
-        <span aria-hidden="true"></span>
+        <span aria-hidden="true">👤</span>
         <span className="text-body-md">{membro.nickname}</span>
         {membro.e_moderatore && <span className="badge-moderatore">Staff</span>}
       </div>
 
       {segnalato ? (
         <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)', fontSize: 11 }}>
-           Segnalato
+          ✅ Segnalato
         </span>
       ) : (
         <button className="btn-segnala-membro" onClick={() => setMostraModal(true)}>
-           Segnala
+          🚩 Segnala
         </button>
       )}
 
@@ -94,7 +94,7 @@ export default function MembriClasse() {
             aria-label="Torna al profilo"
             style={{ background: 'none', border: 'none', color: 'var(--color-primary)', fontSize: 20, cursor: 'pointer' }}
           >
-            
+            ←
           </button>
           <h2 className="text-headline-md" style={{ margin: 0 }}>Membri della Classe</h2>
         </div>
@@ -115,14 +115,14 @@ export default function MembriClasse() {
 
         {!caricamento && errore && (
           <div className="messaggio-errore" role="alert">
-            <span aria-hidden="true"></span>
+            <span aria-hidden="true">⚠️</span>
             <span>{errore}</span>
           </div>
         )}
 
         {!caricamento && !errore && membriFiltrati.length === 0 && (
           <div className="stato-vuoto">
-            <span style={{ fontSize: 32 }}></span>
+            <span style={{ fontSize: 32 }}>🔍</span>
             <p className="text-body-md">Nessun membro trovato.</p>
           </div>
         )}

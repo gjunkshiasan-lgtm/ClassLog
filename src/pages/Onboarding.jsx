@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const CHIAVE_ONBOARDING_VISTO = 'classchronicles_onboarding_visto'

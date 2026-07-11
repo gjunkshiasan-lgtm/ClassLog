@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -43,6 +43,8 @@ export default function Feed() {
     try {
       await chiamaFunzione('segnala-post', { post_id: postId, utente_id: utente.id })
     } catch (err) {
+      // Anche in caso di errore nel salvataggio, non blocchiamo l'interfaccia:
+      // mostriamo comunque la conferma visiva per non scoraggiare la segnalazione.
       console.error(err)
     }
   }

@@ -1,16 +1,17 @@
-﻿import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
+import GuidaAggiungiHome from '../components/GuidaAggiungiHome'
 
 function dataFormattata(dataIso) {
   return new Date(dataIso).toLocaleDateString('it-IT', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
 const ETICHETTE_RUOLO = {
-  root: ' ROOT',
-  admin: ' Admin',
+  root: '👑 ROOT',
+  admin: '🛡️ Admin',
   studente: 'Studente',
 }
 
@@ -46,7 +47,7 @@ export default function Profilo() {
     <LayoutApp>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
         <div className="profilo-header">
-          <div className="profilo-avatar" aria-hidden="true"></div>
+          <div className="profilo-avatar" aria-hidden="true">👤</div>
           <div>
             <h2 className="text-headline-md" style={{ margin: 0 }}>{utente.nickname}</h2>
             <span className="text-label-caps" style={{ color: 'var(--color-primary-fixed-dim)' }}>
@@ -63,7 +64,7 @@ export default function Profilo() {
 
         {!caricamento && errore && (
           <div className="messaggio-errore" role="alert">
-            <span aria-hidden="true"></span>
+            <span aria-hidden="true">⚠️</span>
             <span>{errore}</span>
           </div>
         )}
@@ -93,15 +94,17 @@ export default function Profilo() {
           className="btn-brutalist btn-secondary-outline"
           onClick={() => navigate('/membri')}
         >
-           Membri della Classe
+          👥 Membri della Classe
         </button>
+
+        <GuidaAggiungiHome pulsanteInline />
 
         <button
           type="button"
           className="btn-brutalist btn-secondary-outline"
           onClick={() => navigate('/impostazioni')}
         >
-           Impostazioni
+          ⚙️ Impostazioni
         </button>
 
         <button className="btn-brutalist btn-secondary-outline" onClick={gestisciUscita}>

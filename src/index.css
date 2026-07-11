@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 /* ============================================
    CLASS CHRONICLES - Design System "Neo-Nocturnal"
@@ -1097,6 +1097,99 @@ button, input, textarea {
   color: var(--color-on-tertiary-container);
 }
 
+/* ---------- Like cliccabile ---------- */
+.post-card-azione-btn.like-attivo {
+  color: var(--color-tertiary-container);
+}
+
+.post-card-azione-btn.like-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: var(--font-family);
+}
+.post-card-azione-btn.like-btn:hover {
+  color: var(--color-tertiary-container);
+}
+.post-card-azione-btn.like-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* ---------- Pagina Impostazioni ---------- */
+.impostazioni-riga {
+  background-color: var(--color-surface-container-low);
+  border: 2px solid var(--color-outline-variant);
+  display: flex;
+  flex-direction: column;
+}
+
+.impostazioni-riga-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-md);
+  cursor: pointer;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-family: var(--font-family);
+  color: var(--color-on-surface);
+}
+
+.impostazioni-riga-contenuto {
+  padding: 0 var(--space-md) var(--space-md) var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  border-top: 2px solid var(--color-outline-variant);
+  padding-top: var(--space-md);
+}
+
+.controllo-zoom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+}
+
+.controllo-zoom-bottoni {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.btn-zoom {
+  width: 40px;
+  height: 40px;
+  border: 2px solid var(--color-outline-variant);
+  background: transparent;
+  color: var(--color-on-surface);
+  font-family: var(--font-family);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-zoom:hover:not(:disabled) {
+  border-color: var(--color-primary-fixed-dim);
+  color: var(--color-primary-fixed-dim);
+}
+.btn-zoom:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.zoom-percentuale {
+  font-family: var(--font-family);
+  font-weight: 600;
+  min-width: 48px;
+  text-align: center;
+}
+
 /* ---------- Pagina Regole e Privacy ---------- */
 .regole-pagina {
   max-width: 640px;
@@ -1135,6 +1228,12 @@ button, input, textarea {
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.regole-torna-su {
+  position: sticky;
+  top: var(--space-md);
+  align-self: flex-end;
 }
 
 /* ---------- Membri della Classe ---------- */
@@ -1200,7 +1299,6 @@ button, input, textarea {
   outline: none;
   border-color: var(--color-primary-fixed-dim);
 }
-
 
 /* ---------- Banner Broadcast ---------- */
 .banner-broadcast {
@@ -1293,4 +1391,70 @@ button, input, textarea {
   width: 18px;
   height: 18px;
   flex-shrink: 0;
+}
+
+/* ---------- Guida Aggiungi alla Home ---------- */
+.guida-home-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0,0,0,0.75);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 200;
+  padding: 0;
+}
+
+.guida-home-scheda {
+  background-color: var(--color-surface-container-low);
+  border-top: 2px solid var(--color-outline-variant);
+  width: 100%;
+  max-width: 480px;
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.guida-home-passo {
+  display: flex;
+  gap: var(--space-md);
+  align-items: flex-start;
+}
+
+.guida-home-numero {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  background-color: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.guida-home-icona-esempio {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background-color: var(--color-surface-container-lowest);
+  border: 1px solid var(--color-outline-variant);
+  font-size: 16px;
+  vertical-align: middle;
+}
+
+.pulsante-mostra-guida {
+  position: fixed;
+  bottom: 76px;
+  left: var(--space-md);
+  right: var(--space-md);
+  z-index: 60;
+  max-width: 480px;
+  margin: 0 auto;
 }

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -376,8 +376,10 @@ export default function Benvenuto() {
   const navigate = useNavigate()
   const { utente, caricamento } = useAuth()
   const [nicknamePreview, setNicknamePreview] = useState(generaNicknamePreview())
-  const [tabAttivo, setTabAttivo] = useState('entra')
+  const [tabAttivo, setTabAttivo] = useState('entra') // 'entra' | 'crea'
 
+  // Se l'utente ha già una sessione valida salvata, non mostrargli di
+  // nuovo la schermata di registrazione: portalo direttamente al Feed.
   useEffect(() => {
     if (!caricamento && utente) {
       const eAncoraBannato = utente.bannato_fino_a && new Date(utente.bannato_fino_a) > new Date()
@@ -390,6 +392,8 @@ export default function Benvenuto() {
   }
 
   if (caricamento || utente) {
+    // Evitiamo di mostrare per un istante il form mentre il redirect
+    // sopra sta per scattare.
     return null
   }
 

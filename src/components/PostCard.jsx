@@ -1,4 +1,4 @@
-﻿import { useState, useRef } from 'react'
+import { useState, useRef } from 'react'
 import { tempoRelativo } from '../lib/formattazione'
 import ModalRichiediRimozione from './ModalRichiediRimozione'
 
@@ -10,6 +10,10 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
   const [miPiaceAttivo, setMiPiaceAttivo] = useState(Boolean(post.mi_piace_attivo))
   const [numeroMiPiace, setNumeroMiPiace] = useState(Number(post.numero_mi_piace) || 0)
   const [elaborandoLike, setElaborandoLike] = useState(false)
+  // useRef invece di solo useState: il valore si aggiorna ISTANTANEAMENTE,
+  // senza aspettare il prossimo render. Serve per bloccare davvero i click
+  // doppi/ravvicinati (es. doppio tap su mobile), cosa che uno stato React
+  // da solo non garantisce essere già aggiornato al click successivo.
   const richiestaInCorso = useRef(false)
 
   async function gestisciSegnalazione() {
@@ -28,6 +32,8 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
     if (richiestaInCorso.current) return
     richiestaInCorso.current = true
     setElaborandoLike(true)
+    // Aggiornamento ottimistico: cambiamo subito l'interfaccia,
+    // poi correggiamo se il server risponde diversamente.
     const statoPrecedente = miPiaceAttivo
     const conteggioPrecedente = numeroMiPiace
     setMiPiaceAttivo(!statoPrecedente)
@@ -38,6 +44,7 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
       setMiPiaceAttivo(Boolean(risposta.mi_piace_attivo))
       setNumeroMiPiace(Number(risposta.numero_mi_piace) || 0)
     } catch (err) {
+      // Ripristiniamo lo stato precedente in caso di errore
       setMiPiaceAttivo(statoPrecedente)
       setNumeroMiPiace(conteggioPrecedente)
     } finally {
@@ -143,6 +150,3 @@ export default function PostCard({ post, onSegnala, onRichiediRimozione, onMetiM
     </article>
   )
 }
-
-
-

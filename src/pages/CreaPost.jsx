@@ -1,4 +1,4 @@
-﻿import { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -70,6 +70,9 @@ export default function CreaPost() {
   const [testoNonConsentito, setTestoNonConsentito] = useState(false)
 
   function gestisciScegliSpunto(domanda) {
+    // Se il campo è vuoto, usiamo la domanda come punto di partenza.
+    // Se contiene già testo, non lo sovrascriviamo per non perdere
+    // quanto scritto: aggiungiamo la domanda solo come titolo se assente.
     if (!contenuto.trim()) {
       setContenuto(`${domanda}\n\n`)
     }
@@ -91,6 +94,9 @@ export default function CreaPost() {
 
     setInviando(true)
 
+    // Controllo preventivo: verifichiamo il testo PRIMA di provare a
+    // pubblicare, così mostriamo subito il banner dedicato invece di
+    // un generico messaggio d'errore dopo il tentativo di invio.
     try {
       const rispostaControllo = await chiamaFunzione('controlla-testo', {
         utente_id: utente.id,
@@ -103,7 +109,8 @@ export default function CreaPost() {
       }
     } catch (err) {
       // Se il controllo preventivo fallisce per un problema di rete,
-      // proseguiamo comunque: il server rifiuterà l'invio se necessario.
+      // proseguiamo comunque: il server rifiuterà l'invio se necessario
+      // (il controllo definitivo avviene sempre lato server).
     }
 
     try {
