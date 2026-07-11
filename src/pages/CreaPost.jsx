@@ -67,6 +67,7 @@ export default function CreaPost() {
   const [inviando, setInviando] = useState(false)
   const [errore, setErrore] = useState('')
   const [successo, setSuccesso] = useState('')
+  const [testoNonConsentito, setTestoNonConsentito] = useState(false)
 
   function gestisciScegliSpunto(domanda) {
     if (!contenuto.trim()) {
@@ -81,6 +82,7 @@ export default function CreaPost() {
     e.preventDefault()
     setErrore('')
     setSuccesso('')
+    setTestoNonConsentito(false)
 
     if (!titolo.trim() || !contenuto.trim()) {
       setErrore('Inserisci sia un titolo che il contenuto della cronaca.')
@@ -88,6 +90,22 @@ export default function CreaPost() {
     }
 
     setInviando(true)
+
+    try {
+      const rispostaControllo = await chiamaFunzione('controlla-testo', {
+        utente_id: utente.id,
+        testo: `${titolo} ${contenuto}`,
+      })
+      if (!rispostaControllo.testo_consentito) {
+        setTestoNonConsentito(true)
+        setInviando(false)
+        return
+      }
+    } catch (err) {
+      // Se il controllo preventivo fallisce per un problema di rete,
+      // proseguiamo comunque: il server rifiuterà l'invio se necessario.
+    }
+
     try {
       const risposta = await chiamaFunzione('crea-post', {
         autore_id: utente.id,
@@ -102,7 +120,11 @@ export default function CreaPost() {
 
       setTimeout(() => navigate('/feed'), 1800)
     } catch (err) {
-      setErrore(err.message)
+      if (err.message?.includes('non consentit')) {
+        setTestoNonConsentito(true)
+      } else {
+        setErrore(err.message)
+      }
     } finally {
       setInviando(false)
     }
@@ -132,7 +154,7 @@ export default function CreaPost() {
             placeholder=" "
             maxLength={100}
             value={titolo}
-            onChange={(e) => setTitolo(e.target.value)}
+            onChange={(e) => { setTitolo(e.target.value); setTestoNonConsentito(false) }}
             disabled={inviando}
           />
           <label className="campo-label" htmlFor="titolo-post">Titolo della cronaca</label>
@@ -144,7 +166,7 @@ export default function CreaPost() {
             placeholder="Scrivi qui la tua confessione, pettegolezzo o sfogo. Il vuoto sta ascoltando..."
             maxLength={LIMITE_CARATTERI}
             value={contenuto}
-            onChange={(e) => setContenuto(e.target.value)}
+            onChange={(e) => { setContenuto(e.target.value); setTestoNonConsentito(false) }}
             disabled={inviando}
           />
           <div className="textarea-footer">
@@ -152,6 +174,16 @@ export default function CreaPost() {
             <span>{contenuto.length} / {LIMITE_CARATTERI}</span>
           </div>
         </div>
+
+        {testoNonConsentito && (
+          <div className="messaggio-errore" role="alert" style={{ borderWidth: 2 }}>
+            <span aria-hidden="true">🚫</span>
+            <span>
+              <strong>Non puoi pubblicare questa cronaca.</strong> Il testo contiene parole o
+              espressioni non consentite dalle regole della classe. Modifica il contenuto per continuare.
+            </span>
+          </div>
+        )}
 
         {errore && (
           <div className="messaggio-errore" role="alert">
@@ -167,7 +199,11 @@ export default function CreaPost() {
           </div>
         )}
 
-        <button type="submit" className="btn-brutalist btn-primary-container" disabled={inviando}>
+        <button
+          type="submit"
+          className="btn-brutalist btn-primary-container"
+          disabled={inviando || testoNonConsentito}
+        >
           {inviando ? <span className="spinner" aria-hidden="true" /> : <>Invia per Revisione ➤</>}
         </button>
       </form>
