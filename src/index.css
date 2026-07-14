@@ -355,6 +355,11 @@ button, input, textarea {
   height: 100dvh;
   height: -webkit-fill-available;
   overflow: hidden;
+  overscroll-behavior: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -1461,4 +1466,5 @@ button, input, textarea {
   max-width: 480px;
   margin: 0 auto;
 }
+
 
