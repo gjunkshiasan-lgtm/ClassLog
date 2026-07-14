@@ -54,28 +54,25 @@
   box-sizing: border-box;
 }
 
-html, body {
+html {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden;
-  overscroll-behavior: none;
 }
 
 body {
+  margin: 0;
+  padding: 0;
   background-color: var(--color-background);
   color: var(--color-on-surface);
   font-family: var(--font-family);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
-  position: fixed;
-  width: 100%;
+  overscroll-behavior: none;
 }
 
 #root {
   min-height: 100dvh;
-  height: 100%;
-  overflow: hidden;
 }
 
 
@@ -135,8 +132,10 @@ button, input, textarea {
   flex-direction: column;
   align-items: center;
   padding: var(--space-md);
+  padding-bottom: calc(var(--space-md) + env(safe-area-inset-bottom));
   position: relative;
   overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .pagina-contenuto {
@@ -360,16 +359,17 @@ button, input, textarea {
 .layout-app {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
-  height: -webkit-fill-available;
-  overflow: hidden;
-  overscroll-behavior: none;
+  /* Occupa esattamente lo schermo visibile senza usare position:fixed
+     che rompeva lo scroll delle pagine pubbliche */
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
+  right: 0;
+  bottom: 0;
+  /* Rispetta la safe area di iOS (notch + home indicator) */
+  padding-top: env(safe-area-inset-top, 0px);
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .app-header {
@@ -400,15 +400,18 @@ button, input, textarea {
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
+  /* Assicura che il contenuto non finisca sotto la bottom nav */
+  min-height: 0;
 }
-
 
 .app-bottom-nav {
   flex-shrink: 0;
   display: flex;
   justify-content: space-around;
   align-items: center;
+  /* Padding verticale + safe area home indicator iOS */
   padding: var(--space-sm) var(--space-md);
+  padding-bottom: calc(var(--space-sm) + env(safe-area-inset-bottom, 0px));
   background-color: var(--color-background);
   border-top: 2px solid var(--color-outline-variant);
   z-index: 50;

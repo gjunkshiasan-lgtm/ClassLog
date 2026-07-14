@@ -66,7 +66,7 @@ export default function Accedi() {
   return (
     <div
       className="pagina"
-      style={{ justifyContent: 'center', minHeight: '100dvh' }}
+      style={{ justifyContent: 'center', minHeight: '100dvh', overflowY: 'auto' }}
     >
       <div className="griglia-decorativa" />
 
