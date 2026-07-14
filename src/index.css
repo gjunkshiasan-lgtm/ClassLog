@@ -537,7 +537,8 @@ button, input, textarea {
 .fab-nuovo-post {
   position: fixed;
   right: var(--space-lg);
-  bottom: 88px;
+  /* Staccato dalla bottom nav: altezza nav (~68px) + spazio + safe area iOS */
+  bottom: calc(68px + var(--space-lg) + env(safe-area-inset-bottom, 0px));
   width: 56px;
   height: 56px;
   background-color: var(--color-primary-container);
@@ -1473,7 +1474,7 @@ button, input, textarea {
 
 .pulsante-mostra-guida {
   position: fixed;
-  bottom: 76px;
+  bottom: calc(68px + var(--space-md) + env(safe-area-inset-bottom, 0px));
   left: var(--space-md);
   right: var(--space-md);
   z-index: 60;
