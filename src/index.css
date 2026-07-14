@@ -1,4 +1,4 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 /* ============================================
    CLASS CHRONICLES - Design System "Neo-Nocturnal"
@@ -57,6 +57,9 @@
 html, body {
   margin: 0;
   padding: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 body {
@@ -65,11 +68,16 @@ body {
   font-family: var(--font-family);
   min-height: 100dvh;
   -webkit-font-smoothing: antialiased;
+  position: fixed;
+  width: 100%;
 }
 
 #root {
   min-height: 100dvh;
+  height: 100%;
+  overflow: hidden;
 }
+
 
 button, input, textarea {
   font-family: var(--font-family);
@@ -386,11 +394,14 @@ button, input, textarea {
 .app-main {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
   padding: var(--space-md);
   display: flex;
   flex-direction: column;
   gap: var(--space-md);
 }
+
 
 .app-bottom-nav {
   flex-shrink: 0;
