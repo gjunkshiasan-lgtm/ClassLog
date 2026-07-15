@@ -1482,4 +1482,25 @@ button, input, textarea {
   margin: 0 auto;
 }
 
+/* ---------- Schermata di Blocco (orario/sospensione) ---------- */
+.blocco-pagina {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-md);
+}
+
+.blocco-card {
+  max-width: 420px;
+  text-align: center;
+  border: 2px solid var(--color-error);
+  background-color: var(--color-surface-container);
+  padding: var(--space-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-md);
+}
+
 

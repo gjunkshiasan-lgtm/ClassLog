@@ -1,10 +1,8 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 
-// Liste usate solo per l'ANTEPRIMA visiva del nickname prima dell'invio.
-// Il nickname DEFINITIVO viene sempre generato/validato dal server.
 const AGGETTIVI = [
   'Curioso', 'Silenzioso', 'Rapido', 'Astuto', 'Coraggioso', 'Distratto',
   'Misterioso', 'Vivace', 'Instancabile', 'Sognatore', 'Ribelle', 'Geniale',
@@ -188,32 +186,82 @@ function FormEntraClasse({ nicknamePreview }) {
   )
 }
 
+const NUMERI_CLASSE = ['1', '2', '3', '4', '5']
+const LETTERE_CLASSE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+
+function SchermataCodiceGenerato({ nomeClasse, codiceClasse, nickname, onContinua }) {
+  const [copiato, setCopiato] = useState(false)
+
+  function copiaCodice() {
+    navigator.clipboard?.writeText(codiceClasse)
+    setCopiato(true)
+    setTimeout(() => setCopiato(false), 2000)
+  }
+
+  return (
+    <div className="neo-card" style={{ textAlign: 'center' }}>
+      <span style={{ fontSize: 40 }} aria-hidden="true">🎉</span>
+      <h2 className="text-headline-md" style={{ margin: 0 }}>Classe {nomeClasse} Creata!</h2>
+      <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)' }}>
+        Sei entrato come <strong style={{ color: 'var(--color-primary-fixed-dim)' }}>{nickname}</strong>, ROOT di questa classe.
+      </p>
+
+      <div
+        style={{
+          backgroundColor: 'var(--color-surface-container-lowest)',
+          border: '2px solid var(--color-error)',
+          padding: 'var(--space-md)',
+        }}
+      >
+        <span className="text-label-caps" style={{ color: 'var(--color-error)' }}>
+          ⚠️ Salva questo Codice Classe ORA
+        </span>
+        <p className="text-body-md" style={{ fontSize: 13, color: 'var(--color-on-surface-variant)', margin: '8px 0' }}>
+          Non potrai più vederlo dopo aver lasciato questa schermata. Condividilo solo con i tuoi compagni di classe.
+        </p>
+        <div
+          style={{
+            fontSize: 32, fontWeight: 700, letterSpacing: '0.15em',
+            color: 'var(--color-primary-fixed)', fontFamily: 'monospace',
+            padding: 'var(--space-sm)',
+          }}
+        >
+          {codiceClasse}
+        </div>
+        <button type="button" className="btn-brutalist btn-secondary-outline" onClick={copiaCodice}>
+          {copiato ? '✅ Copiato!' : '📋 Copia Codice'}
+        </button>
+      </div>
+
+      <button type="button" className="btn-brutalist btn-primary" onClick={onContinua}>
+        Ho Salvato il Codice, Continua →
+      </button>
+    </div>
+  )
+}
 function FormCreaClasse({ nicknamePreview }) {
   const navigate = useNavigate()
   const { accedi } = useAuth()
 
-  const [nomeClasse, setNomeClasse] = useState('')
-  const [codiceClasse, setCodiceClasse] = useState('')
+  const [numeroClasse, setNumeroClasse] = useState('')
+  const [letteraClasse, setLetteraClasse] = useState('')
   const [password, setPassword] = useState('')
   const [accettaResponsabilita, setAccettaResponsabilita] = useState(false)
   const [accettaRegole, setAccettaRegole] = useState(false)
   const [inviando, setInviando] = useState(false)
   const [errore, setErrore] = useState('')
+  const [risultatoCreazione, setRisultatoCreazione] = useState(null)
 
   async function gestisciInvio(e) {
     e.preventDefault()
     setErrore('')
 
-    if (!nomeClasse.trim() || !codiceClasse.trim() || !password) {
+    if (!numeroClasse || !letteraClasse || !password) {
       setErrore('Compila tutti i campi per creare la classe.')
       return
     }
     if (password.length < 6) {
       setErrore('La password deve avere almeno 6 caratteri.')
-      return
-    }
-    if (codiceClasse.trim().length < 4) {
-      setErrore('Il Codice Classe deve avere almeno 4 caratteri.')
       return
     }
     if (!accettaResponsabilita) {
@@ -228,23 +276,40 @@ function FormCreaClasse({ nicknamePreview }) {
     setInviando(true)
     try {
       const risposta = await chiamaFunzione('crea-classe', {
-        nome_classe: nomeClasse.trim(),
-        codice_classe: codiceClasse.trim(),
+        nome_classe: `${numeroClasse}${letteraClasse}`,
         password,
       })
 
-      accedi({
-        id: risposta.utente.id,
-        nickname: risposta.utente.nickname,
-        ruolo: risposta.utente.ruolo,
+      setRisultatoCreazione({
+        nomeClasse: risposta.classe.nome_classe,
+        codiceClasse: risposta.codice_classe,
+        utente: risposta.utente,
       })
-
-      navigate('/feed')
     } catch (err) {
       setErrore(err.message)
     } finally {
       setInviando(false)
     }
+  }
+
+  function gestisciContinua() {
+    accedi({
+      id: risultatoCreazione.utente.id,
+      nickname: risultatoCreazione.utente.nickname,
+      ruolo: risultatoCreazione.utente.ruolo,
+    })
+    navigate('/feed')
+  }
+
+  if (risultatoCreazione) {
+    return (
+      <SchermataCodiceGenerato
+        nomeClasse={risultatoCreazione.nomeClasse}
+        codiceClasse={risultatoCreazione.codiceClasse}
+        nickname={risultatoCreazione.utente.nickname}
+        onContinua={gestisciContinua}
+      />
+    )
   }
 
   return (
@@ -260,38 +325,46 @@ function FormCreaClasse({ nicknamePreview }) {
         <p className="text-body-md" style={{ color: 'var(--color-on-surface-variant)', margin: 0, fontSize: 14 }}>
           Diventerai il <strong style={{ color: 'var(--color-primary-fixed-dim)' }}>ROOT</strong> di questa classe:
           potrai approvare cronache, gestire segnalazioni, promuovere altri Admin e bannare utenti.
+          Il Codice Classe verrà generato automaticamente dal sistema.
         </p>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}>
-          <div className="campo-input-wrap">
-            <input
-              id="nome-classe"
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+          <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
+            Seleziona la tua classe
+          </span>
+          <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
+            <select
               className="input-brutalist"
-              type="text"
-              placeholder=" "
-              autoComplete="off"
-              maxLength={60}
-              value={nomeClasse}
-              onChange={(e) => setNomeClasse(e.target.value)}
+              value={numeroClasse}
+              onChange={(e) => setNumeroClasse(e.target.value)}
               disabled={inviando}
-            />
-            <label className="campo-label" htmlFor="nome-classe">Nome Classe (univoco, es. "5A Liceo Rossi 2026")</label>
-          </div>
-
-          <div className="campo-input-wrap">
-            <input
-              id="nuovo-codice-classe"
+              style={{ flex: 1 }}
+              aria-label="Numero classe"
+            >
+              <option value="">Numero</option>
+              {NUMERI_CLASSE.map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+            <select
               className="input-brutalist"
-              type="text"
-              placeholder=" "
-              autoComplete="off"
-              value={codiceClasse}
-              onChange={(e) => setCodiceClasse(e.target.value)}
-              style={{ textTransform: 'uppercase' }}
+              value={letteraClasse}
+              onChange={(e) => setLetteraClasse(e.target.value)}
               disabled={inviando}
-            />
-            <label className="campo-label" htmlFor="nuovo-codice-classe">Nuovo Codice Classe (min. 4 caratteri)</label>
+              style={{ flex: 1 }}
+              aria-label="Sezione classe"
+            >
+              <option value="">Sezione</option>
+              {LETTERE_CLASSE.map((l) => (
+                <option key={l} value={l}>{l}</option>
+              ))}
+            </select>
           </div>
+          {numeroClasse && letteraClasse && (
+            <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-primary-fixed-dim)' }}>
+              Classe selezionata: <strong>{numeroClasse}{letteraClasse}</strong>
+            </p>
+          )}
 
           <div className="campo-input-wrap">
             <input
@@ -376,10 +449,8 @@ export default function Benvenuto() {
   const navigate = useNavigate()
   const { utente, caricamento } = useAuth()
   const [nicknamePreview, setNicknamePreview] = useState(generaNicknamePreview())
-  const [tabAttivo, setTabAttivo] = useState('entra') // 'entra' | 'crea'
+  const [tabAttivo, setTabAttivo] = useState('entra')
 
-  // Se l'utente ha già una sessione valida salvata, non mostrargli di
-  // nuovo la schermata di registrazione: portalo direttamente al Feed.
   useEffect(() => {
     if (!caricamento && utente) {
       const eAncoraBannato = utente.bannato_fino_a && new Date(utente.bannato_fino_a) > new Date()
@@ -392,8 +463,6 @@ export default function Benvenuto() {
   }
 
   if (caricamento || utente) {
-    // Evitiamo di mostrare per un istante il form mentre il redirect
-    // sopra sta per scattare.
     return null
   }
 
