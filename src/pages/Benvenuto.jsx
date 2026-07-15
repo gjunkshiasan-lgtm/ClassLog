@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
@@ -186,8 +186,116 @@ function FormEntraClasse({ nicknamePreview }) {
   )
 }
 
-const NUMERI_CLASSE = ['1', '2', '3', '4', '5']
-const LETTERE_CLASSE = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
+const TUTTE_LE_CLASSI = []
+for (let n = 1; n <= 5; n++) {
+  for (let l = 0; l < 26; l++) {
+    TUTTE_LE_CLASSI.push(`${n}${String.fromCharCode(65 + l)}`)
+  }
+}
+
+function SelettoreClasseRicerca({ valore, onChange, disabled }) {
+  const [aperto, setAperto] = useState(false)
+  const [ricerca, setRicerca] = useState('')
+
+  const filtrate = TUTTE_LE_CLASSI.filter((c) =>
+    c.toLowerCase().includes(ricerca.toLowerCase())
+  )
+
+  return (
+    <div style={{ position: 'relative' }}>
+      <div className="campo-input-wrap">
+        <input
+          type="text"
+          className="input-brutalist"
+          placeholder=" "
+          value={aperto ? ricerca : valore}
+          onChange={(e) => {
+            setRicerca(e.target.value)
+            setAperto(true)
+            if (!e.target.value) onChange('')
+          }}
+          onFocus={() => {
+            setAperto(true)
+            setRicerca('')
+          }}
+          onBlur={() => {
+            setTimeout(() => setAperto(false), 200)
+          }}
+          disabled={disabled}
+        />
+        <label className="campo-label">Cerca o scegli la classe (es. 3A)</label>
+      </div>
+
+      {aperto && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            maxHeight: 220,
+            overflowY: 'auto',
+            backgroundColor: 'var(--color-surface-container-low)',
+            border: '2px solid var(--color-outline-variant)',
+            borderTop: 'none',
+            zIndex: 10,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(60px, 1fr))',
+            gap: 'var(--space-xs)',
+            padding: 'var(--space-sm)',
+            boxShadow: '4px 4px 0px 0px var(--color-background)',
+          }}
+        >
+          {filtrate.map((c) => (
+            <button
+              key={c}
+              type="button"
+              style={{
+                padding: 'var(--space-sm) 0',
+                backgroundColor:
+                  valore === c
+                    ? 'var(--color-primary-fixed-dim)'
+                    : 'var(--color-surface-container)',
+                color:
+                  valore === c
+                    ? 'var(--color-on-primary)'
+                    : 'var(--color-on-surface)',
+                border: '2px solid',
+                borderColor:
+                  valore === c
+                    ? 'var(--color-primary-fixed-dim)'
+                    : 'transparent',
+                cursor: 'pointer',
+                fontFamily: 'var(--font-family)',
+                fontWeight: 600,
+                textAlign: 'center',
+                transition: 'all 0.1s',
+              }}
+              onClick={() => {
+                onChange(c)
+                setAperto(false)
+              }}
+            >
+              {c}
+            </button>
+          ))}
+          {filtrate.length === 0 && (
+            <div
+              style={{
+                gridColumn: '1 / -1',
+                padding: 'var(--space-md)',
+                textAlign: 'center',
+                color: 'var(--color-on-surface-variant)',
+              }}
+            >
+              Nessuna classe trovata
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
 
 function SchermataCodiceGenerato({ nomeClasse, codiceClasse, nickname, onContinua }) {
   const [copiato, setCopiato] = useState(false)
@@ -243,8 +351,7 @@ function FormCreaClasse({ nicknamePreview }) {
   const navigate = useNavigate()
   const { accedi } = useAuth()
 
-  const [numeroClasse, setNumeroClasse] = useState('')
-  const [letteraClasse, setLetteraClasse] = useState('')
+  const [nomeClasseSelezionato, setNomeClasseSelezionato] = useState('')
   const [password, setPassword] = useState('')
   const [accettaResponsabilita, setAccettaResponsabilita] = useState(false)
   const [accettaRegole, setAccettaRegole] = useState(false)
@@ -256,7 +363,7 @@ function FormCreaClasse({ nicknamePreview }) {
     e.preventDefault()
     setErrore('')
 
-    if (!numeroClasse || !letteraClasse || !password) {
+    if (!nomeClasseSelezionato || !password) {
       setErrore('Compila tutti i campi per creare la classe.')
       return
     }
@@ -276,7 +383,7 @@ function FormCreaClasse({ nicknamePreview }) {
     setInviando(true)
     try {
       const risposta = await chiamaFunzione('crea-classe', {
-        nome_classe: `${numeroClasse}${letteraClasse}`,
+        nome_classe: nomeClasseSelezionato,
         password,
       })
 
@@ -332,37 +439,16 @@ function FormCreaClasse({ nicknamePreview }) {
           <span className="text-label-caps" style={{ color: 'var(--color-on-surface-variant)' }}>
             Seleziona la tua classe
           </span>
-          <div style={{ display: 'flex', gap: 'var(--space-md)' }}>
-            <select
-              className="input-brutalist"
-              value={numeroClasse}
-              onChange={(e) => setNumeroClasse(e.target.value)}
+          <div style={{ position: 'relative' }}>
+            <SelettoreClasseRicerca
+              valore={nomeClasseSelezionato}
+              onChange={setNomeClasseSelezionato}
               disabled={inviando}
-              style={{ flex: 1 }}
-              aria-label="Numero classe"
-            >
-              <option value="">Numero</option>
-              {NUMERI_CLASSE.map((n) => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
-            <select
-              className="input-brutalist"
-              value={letteraClasse}
-              onChange={(e) => setLetteraClasse(e.target.value)}
-              disabled={inviando}
-              style={{ flex: 1 }}
-              aria-label="Sezione classe"
-            >
-              <option value="">Sezione</option>
-              {LETTERE_CLASSE.map((l) => (
-                <option key={l} value={l}>{l}</option>
-              ))}
-            </select>
+            />
           </div>
-          {numeroClasse && letteraClasse && (
+          {nomeClasseSelezionato && (
             <p className="text-body-md" style={{ margin: 0, fontSize: 13, color: 'var(--color-primary-fixed-dim)' }}>
-              Classe selezionata: <strong>{numeroClasse}{letteraClasse}</strong>
+              Classe selezionata: <strong>{nomeClasseSelezionato}</strong>
             </p>
           )}
 
