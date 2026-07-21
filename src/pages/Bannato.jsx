@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../lib/AuthContext'
+import BannerFeedback from '../components/BannerFeedback'
 
 function giorniRimanenti(dataIso) {
   const scadenza = new Date(dataIso)
@@ -75,6 +76,8 @@ export default function Bannato() {
             </p>
           </div>
         </div>
+
+        <BannerFeedback />
 
         <button className="btn-brutalist btn-secondary-outline" onClick={gestisciUscita}>
           Esci

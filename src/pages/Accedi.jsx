@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
+import BannerFeedback from '../components/BannerFeedback'
 
 export default function Accedi() {
   const navigate = useNavigate()
@@ -206,6 +207,7 @@ export default function Accedi() {
             </div>
           </div>
         </form>
+        <BannerFeedback />
       </main>
     </div>
   )

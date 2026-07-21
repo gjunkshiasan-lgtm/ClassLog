@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
+import BannerFeedback from '../components/BannerFeedback'
 
 const AGGETTIVI = [
   'Curioso', 'Silenzioso', 'Rapido', 'Astuto', 'Coraggioso', 'Distratto',
@@ -620,6 +621,8 @@ export default function Benvenuto() {
             Accedi qui
           </button>
         </p>
+
+        <BannerFeedback />
       </main>
     </div>
   )

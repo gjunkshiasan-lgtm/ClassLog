@@ -4,6 +4,7 @@ import { chiamaFunzione } from '../lib/supabaseClient'
 import { useAuth } from '../lib/AuthContext'
 import { useZoom } from '../lib/ZoomContext'
 import LayoutApp from '../components/LayoutApp'
+import BannerFeedback from '../components/BannerFeedback'
 
 function ControlloZoom() {
   const { livelloZoom, aumentaZoom, diminuisciZoom, ripristinaZoom, ZOOM_MINIMO, ZOOM_MASSIMO } = useZoom()
@@ -149,6 +150,7 @@ export default function Impostazioni() {
 
         <ControlloZoom />
         <SezioneEliminaAccount utente={utente} onEliminato={gestisciAccountEliminato} />
+        <BannerFeedback />
       </div>
     </LayoutApp>
   )
