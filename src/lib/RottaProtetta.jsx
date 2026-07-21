@@ -1,13 +1,13 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './AuthContext'
-import { chiamaFunzione } from './supabaseClient'
+import { chiamaFunzione, supabase } from './supabaseClient'
 import Bloccato from '../pages/Bloccato'
 
 const ROTTE_SEMPRE_ACCESSIBILI = ['/impostazioni']
 
 export default function RottaProtetta({ children }) {
-  const { utente, caricamento } = useAuth()
+  const { utente, caricamento, accedi } = useAuth()
   const location = useLocation()
   const [statoPiattaforma, setStatoPiattaforma] = useState(null)
   const [controllando, setControllando] = useState(true)
@@ -18,18 +18,36 @@ export default function RottaProtetta({ children }) {
       return
     }
     let cancellato = false
-    chiamaFunzione('controlla-stato-piattaforma', { utente_id: utente.id })
-      .then((risposta) => {
-        if (!cancellato) setStatoPiattaforma(risposta)
-      })
-      .catch(() => {
+
+    async function eseguiControlli() {
+      try {
+        const rispostaPiattaforma = await chiamaFunzione('controlla-stato-piattaforma', { utente_id: utente.id })
+        if (!cancellato) setStatoPiattaforma(rispostaPiattaforma)
+
+        // Controlla ban utente in tempo reale
+        const { data: datiUtente } = await supabase
+          .from('utenti')
+          .select('bannato_fino_a, motivo_ban')
+          .eq('id', utente.id)
+          .single()
+
+        if (!cancellato && datiUtente) {
+          // Se lo stato di ban nel DB è diverso da quello salvato nel localStorage/Context, aggiorniamo la sessione
+          if (datiUtente.bannato_fino_a !== utente.bannato_fino_a) {
+            accedi({ ...utente, bannato_fino_a: datiUtente.bannato_fino_a, motivo_ban: datiUtente.motivo_ban })
+          }
+        }
+      } catch (err) {
         if (!cancellato) setStatoPiattaforma({ blocco_orario_attivo: false, classe_sospesa: false })
-      })
-      .finally(() => {
+      } finally {
         if (!cancellato) setControllando(false)
-      })
+      }
+    }
+
+    eseguiControlli()
+
     return () => { cancellato = true }
-  }, [utente, location.pathname])
+  }, [utente, location.pathname, accedi])
 
   if (caricamento || controllando) return null
 
