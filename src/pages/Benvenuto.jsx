@@ -120,13 +120,23 @@ function FormEntraClasse({ nicknamePreview }) {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}>
-          {/* Campo nascosto: dice al browser che il nome utente è il nickname, non il codice classe */}
+          {/* Campo visivamente nascosto ma presente nel DOM: i browser ignorano display:none per l'autocomplete */}
           <input
             type="text"
             autoComplete="username"
+            name="username"
             value={nicknamePreview}
             readOnly
-            style={{ display: 'none' }}
+            tabIndex={-1}
+            aria-hidden="true"
+            style={{
+              position: 'absolute',
+              width: '1px',
+              height: '1px',
+              opacity: 0,
+              pointerEvents: 'none',
+              overflow: 'hidden',
+            }}
           />
           <div className="campo-input-wrap">
             <input
