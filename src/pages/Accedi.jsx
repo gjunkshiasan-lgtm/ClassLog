@@ -119,7 +119,24 @@ export default function Accedi() {
           />
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-lg)' }}>
-            <div className="campo-input-wrap">
+            {/* NOTA: il Nickname è PRIMA nel DOM così il browser lo riconosce come "username" per l'autocomplete.
+                Visivamente appare secondo grazie a CSS order. */}
+            <div className="campo-input-wrap" style={{ order: 2 }}>
+              <input
+                id="nickname-login"
+                className="input-brutalist"
+                type="text"
+                placeholder=" "
+                autoComplete="username"
+                name="username"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                disabled={inviando}
+              />
+              <label className="campo-label" htmlFor="nickname-login">Nickname Anonimo</label>
+            </div>
+
+            <div className="campo-input-wrap" style={{ order: 1 }}>
               <input
                 id="codice-classe-login"
                 className="input-brutalist"
@@ -134,27 +151,14 @@ export default function Accedi() {
               <label className="campo-label" htmlFor="codice-classe-login">Codice Classe</label>
             </div>
 
-            <div className="campo-input-wrap">
-              <input
-                id="nickname-login"
-                className="input-brutalist"
-                type="text"
-                placeholder=" "
-                autoComplete="username"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
-                disabled={inviando}
-              />
-              <label className="campo-label" htmlFor="nickname-login">Nickname Anonimo</label>
-            </div>
-
-            <div className="campo-input-wrap">
+            <div className="campo-input-wrap" style={{ order: 3 }}>
               <input
                 id="password-login"
                 className="input-brutalist"
                 type="password"
                 placeholder=" "
                 autoComplete="current-password"
+                name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={inviando}
