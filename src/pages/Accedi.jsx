@@ -140,7 +140,7 @@ export default function Accedi() {
                 className="input-brutalist"
                 type="text"
                 placeholder=" "
-                autoComplete="off"
+                autoComplete="username"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
                 disabled={inviando}
