@@ -5,7 +5,7 @@ import { useAuth } from '../lib/AuthContext'
 import LayoutApp from '../components/LayoutApp'
 import ModalSegnalaUtente from '../components/ModalSegnalaUtente'
 
-function RigaMembro({ membro, onSegnala }) {
+function RigaMembro({ membro, onSegnala, ruoloCorrente }) {
   const [mostraModal, setMostraModal] = useState(false)
   const [segnalato, setSegnalato] = useState(false)
 
@@ -15,12 +15,14 @@ function RigaMembro({ membro, onSegnala }) {
     setMostraModal(false)
   }
 
+  const puoVedereBadge = ruoloCorrente === 'admin' || ruoloCorrente === 'root'
+
   return (
     <div className="riga-membro">
       <div className="riga-membro-nome">
         <span aria-hidden="true">👤</span>
         <span className="text-body-md">{membro.nickname}</span>
-        {membro.e_moderatore && <span className="badge-moderatore">Staff</span>}
+        {puoVedereBadge && membro.e_moderatore && <span className="badge-moderatore">Staff</span>}
       </div>
 
       {segnalato ? (
@@ -128,7 +130,7 @@ export default function MembriClasse() {
         )}
 
         {!caricamento && membriFiltrati.map((m) => (
-          <RigaMembro key={m.id} membro={m} onSegnala={gestisciSegnalazione} />
+          <RigaMembro key={m.id} membro={m} onSegnala={gestisciSegnalazione} ruoloCorrente={utente?.ruolo} />
         ))}
       </div>
     </LayoutApp>
