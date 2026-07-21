@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from './AuthContext'
-import { chiamaFunzione, supabase } from './supabaseClient'
+import { chiamaFunzione } from './supabaseClient'
 import Bloccato from '../pages/Bloccato'
 
 const ROTTE_SEMPRE_ACCESSIBILI = ['/impostazioni']
@@ -21,23 +21,18 @@ export default function RottaProtetta({ children }) {
 
     async function eseguiControlli() {
       try {
-        const rispostaPiattaforma = await chiamaFunzione('controlla-stato-piattaforma', { utente_id: utente.id })
-        if (!cancellato) setStatoPiattaforma(rispostaPiattaforma)
+        const risposta = await chiamaFunzione('controlla-stato-piattaforma', { utente_id: utente.id })
+        if (!cancellato) {
+          setStatoPiattaforma(risposta)
 
-        // Controlla ban utente in tempo reale
-        const { data: datiUtente } = await supabase
-          .from('utenti')
-          .select('bannato_fino_a, motivo_ban')
-          .eq('id', utente.id)
-          .single()
-
-        if (!cancellato && datiUtente) {
-          // Se lo stato di ban nel DB è diverso da quello salvato nel localStorage/Context, aggiorniamo la sessione
-          if (datiUtente.bannato_fino_a !== utente.bannato_fino_a) {
-            accedi({ ...utente, bannato_fino_a: datiUtente.bannato_fino_a, motivo_ban: datiUtente.motivo_ban })
+          // Se la Edge Function restituisce uno stato ban diverso da quello in sessione, aggiorniamo il Context
+          // (La Edge Function usa service_role, quindi legge i dati reali dal DB senza blocchi RLS)
+          const banCambiato = risposta.bannato_fino_a !== utente.bannato_fino_a
+          if (banCambiato) {
+            accedi({ ...utente, bannato_fino_a: risposta.bannato_fino_a, motivo_ban: risposta.motivo_ban })
           }
         }
-      } catch (err) {
+      } catch {
         if (!cancellato) setStatoPiattaforma({ blocco_orario_attivo: false, classe_sospesa: false })
       } finally {
         if (!cancellato) setControllando(false)
